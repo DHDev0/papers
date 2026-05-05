@@ -43,14 +43,9 @@ This paper addresses this question. We establish three results:
 
 3. **Intermediate supervision breaks the barrier** (§7): Providing ground-truth intermediate results — via discrete tools, chain-of-thought, or continuous targets — factorizes the condition number from $c^D$ to $D \cdot c^{D/K}$, reducing optimization from exponential to polynomial.
 
-### 1.1 What We Claim (and What We Do Not)
+### 1.1 What We Claim
 
-To avoid misinterpretation, we explicitly clarify the boundaries of our argument:
-- **We do not claim that neural networks cannot represent deep logic.** By Theorem 3.1, smooth continuous extensions of deep Boolean functions exist. The bottleneck is optimizational, not representational.
-- **We do not claim that hardware underflow is the fundamental cause of failure.** While limited numerical precision severely exacerbates the issue (Section 6), the condition number barrier is a fundamental theoretical obstruction that persists even with infinite-precision arithmetic.
-- **We do not claim that agentic tool-use is the only possible solution.** As noted in Remark 7.2, continuous intermediate supervision or soft checkpoints also provide the necessary optimization factorization.
-
-Conversely, our central thesis establishes three positive theoretical results:
+Our central thesis establishes three positive theoretical results:
 - **End-to-end training is fundamentally intractable for deep logic.** Without intermediate supervision, gradient-based optimization suffers from exponential condition number growth ($\kappa = e^{\Theta(D)}$), forcing an exponentially slow convergence rate.
 - **Intermediate supervision factorizes the optimization landscape.** Providing ground-truth intermediate checkpoints explicitly breaks the exponential condition number into a polynomial sum of tractable shallow problems (Theorem 7.1).
 - **Agentic architectures are the necessary practical solution.** The industry shift toward tool-use and Chain-of-Thought reasoning is not an engineering heuristic, but rather the most mathematically sound instantiation of optimization factorization.
