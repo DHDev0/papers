@@ -9,10 +9,6 @@
 
 **Abstract.** We investigate the optimization-theoretic barriers that gradient-based methods face when learning exact combinatorial logic of depth $D$. We first demonstrate that smooth, low-Lipschitz representations of deep Boolean functions *exist* (the multilinear extension has $L = O(\sqrt{N})$), establishing that the barrier is not representational but *optimizational*. We then prove the *Condition Number Sub-Multiplicativity Theorem*: end-to-end backpropagation through a depth-$D$ composition yields an aggregate condition number bounded by $\kappa_{\mathrm{total}} \le \prod_{i=1}^D \kappa_i$, and show via the Furstenberg–Kesten theorem that this bound is generically achieved, giving $\kappa = e^{\Theta(D)}$ with high probability under standard initialization. For recurrent architectures, we prove the *Recurrent Dilemma*: maintaining discrete logical states requires either spectral radius $\lambda_{\max} > 1$ (exponential gradient explosion via BPTT) or $\lambda_{\max} = 1$ with polynomial center-manifold escape (severe latency and polynomial gradient explosion). We show these barriers persist under SGD, momentum, and Adam. Finally, we prove the *Optimization Factorization Theorem*: intermediate supervision — whether via discrete tools or continuous checkpoints — decomposes a single depth-$D$ problem with $\kappa \propto c^D$ into $K$ independent sub-problems with $\kappa \propto c^{D/K}$ each, reducing total optimization cost from exponential to polynomial. This provides an optimization-theoretic justification for the empirical superiority of agentic AI architectures.
 
-**Keywords:** condition number, optimization factorization, depth separation, agentic AI, intermediate supervision
-
-**MSC 2020:** 68T07, 90C26, 37C75, 68Q17
-
 ---
 
 ## Summary of Main Results
@@ -28,6 +24,31 @@
 | 7 | Necessity of $\kappa_i > 1$ | Isometric layers ($\kappa=1$) cannot compute nontrivial logic | Theorem 9.1 |
 | 8 | Approximate learnability boundary | $\mathsf{AC}^0$: quasi-poly learnable; outside $\mathsf{AC}^0$: exponential | Theorem 9.3 |
 | 9 | Second-order methods | Newton removes $\kappa$ from iterations but not from total cost | Theorem 9.8 |
+
+---
+
+## Appendix: Table of Contents
+
+- **1. Introduction**
+  - 1.1 What We Claim
+  - 1.2 Relation to Prior Work
+- **2. Preliminaries**
+- **3. The Representation Is Not the Barrier**
+- **4. The Condition Number Barrier**
+  - 4.1 Jacobian Product and Conditioning
+- **5. The Recurrent Dilemma**
+- **6. Persistence Under Stochastic and Adaptive Optimization**
+- **7. The Optimization Factorization Theorem**
+  - 7.1 Intermediate Supervision Factorizes Conditioning
+  - 7.2 Agentic Architectures as Optimization Factorization
+- **8. Quantitative Analysis**
+- **9. Extended Results**
+  - 9.1 Why $\kappa_i > 1$ is Necessary for Nontrivial Logic
+  - 9.2 Approximate Reasoning: Quantitative Relaxation
+  - 9.3 Second-Order Methods
+- **10. Conclusion**
+- **11. Open Questions**
+- **References**
 
 ---
 
