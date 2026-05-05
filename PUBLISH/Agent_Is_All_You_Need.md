@@ -45,12 +45,12 @@ This paper addresses this question. We establish three results:
 
 ### 1.1 What We Do NOT Claim
 
-We explicitly disclaim:
-- ~~Neural networks cannot *represent* deep logic~~ — they can (Theorem 3.1).
-- ~~Hardware underflow is the fundamental barrier~~ — while finite-precision limits are quickly exceeded, the condition number barrier is theoretically fundamental and persists even with infinite-precision arithmetic.
-- ~~Agentic tool-use is the *unique* solution~~ — continuous intermediate supervision also works (Remark 7.2).
+To avoid misinterpretation, we explicitly clarify the boundaries of our argument:
+- **We do not claim that neural networks cannot represent deep logic.** By Theorem 3.1, smooth continuous extensions of deep Boolean functions exist. The bottleneck is optimizational, not representational.
+- **We do not claim that hardware underflow is the fundamental cause of failure.** While limited numerical precision severely exacerbates the issue (Section 6), the condition number barrier is a fundamental theoretical obstruction that persists even with infinite-precision arithmetic.
+- **We do not claim that agentic tool-use is the only possible solution.** As noted in Remark 7.2, continuous intermediate supervision or soft checkpoints also provide the necessary optimization factorization.
 
-What we *do* claim: end-to-end training is *exponentially slower* than factorized training, and agentic architectures are the most natural instantiation of factorized training in practice.
+What we *do* claim is that end-to-end training is *exponentially slower* than factorized training, and that agentic architectures currently serve as the most natural and effective instantiation of optimization factorization in practice.
 
 ### 1.2 Relation to Prior Work
 
