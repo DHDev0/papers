@@ -18,6 +18,9 @@ This folder contains the finalized, publication-ready manuscripts. These core pa
 * **`The_Algorithmic_Entropy_of_the_Critical_Line.md`** 
   The capstone theoretical framework bridging the Riemann Hypothesis, $\mathsf{P \neq NP}$, and $\mathsf{VP \neq VNP}$. It introduces the Algorithmic Möbius Noise Hypothesis (AMNH), linking the arithmetic structure of étale cohomology and prime distributions to circuit complexity via Katz-Sarnak equidistribution and Ruelle spectral gaps.
 
+* **`Agent_Is_All_You_Need.md`**
+  Investigates the optimization-theoretic barriers gradient-based methods face when learning deep logic. Proves the *Optimization Factorization Theorem* and establishes that intermediate supervision via agentic architectures prevents the exponential condition number explosions ($\kappa = e^{\Theta(D)}$) inherent to end-to-end training of deep reasoning tasks.
+
 ---
 
 ## 2. IN_PROGRESS (Papers in Development)
