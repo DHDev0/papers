@@ -1,6 +1,9 @@
 # Agent Is All You Need: Condition Number Barriers in Deep Logic Learning and the Optimization Advantage of Agentic Architectures
 
-**Daniel Derycke**
+**Daniel Derycke** (d.deryckeh@gmail.com)  
+**Date:** 5 May 2026
+
+> *Acknowledgments: Substantial writing assistance, technical review, and annotation were provided by Claude Opus 4.6, and Gemini 3.1 under the sole direction and oversight of the author.*
 
 ---
 
