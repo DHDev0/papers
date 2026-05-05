@@ -47,7 +47,7 @@ This paper addresses this question. We establish three results:
 
 We explicitly disclaim:
 - ~~Neural networks cannot *represent* deep logic~~ — they can (Theorem 3.1).
-- ~~Learning rate underflows to machine zero~~ — it does not; $\eta \cdot \|\nabla\mathcal{L}\| = O(1)$ by cancellation.
+- ~~Hardware underflow is the fundamental barrier~~ — while finite-precision limits are quickly exceeded, the condition number barrier is theoretically fundamental and persists even with infinite-precision arithmetic.
 - ~~Agentic tool-use is the *unique* solution~~ — continuous intermediate supervision also works (Remark 7.2).
 
 What we *do* claim: end-to-end training is *exponentially slower* than factorized training, and agentic architectures are the most natural instantiation of factorized training in practice.
