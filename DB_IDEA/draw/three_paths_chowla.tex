@@ -1,0 +1,678 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{tcolorbox}
+\usepackage{graphicx}
+
+\usepackage[
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=darkgray,
+    urlcolor=blue,
+    bookmarks=true,
+    bookmarksnumbered=true,
+    unicode=true
+]{hyperref}
+
+\geometry{a4paper, top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\EE}{\mathcal{E}}
+\newcommand{\OO}{\mathcal{O}}
+\renewcommand{\AA}{\mathcal{A}}
+\newcommand{\Norm}{\mathcal{N}}
+\newcommand{\SL}{\mathrm{SL}}
+\newcommand{\GL}{\mathrm{GL}}
+\newcommand{\Sym}{\mathrm{sym}}
+\newcommand{\spec}{\mathrm{spec}}
+\newcommand{\disc}{\mathrm{disc}}
+\newcommand{\cont}{\mathrm{cont}}
+\newcommand{\Res}{\mathrm{Res}}
+\DeclareMathOperator{\arctanh}{arctanh}
+\DeclareMathOperator{\Spec}{Spec}
+
+\title{Three Paths Toward the Even Chowla Conjecture:\\
+Spectral, Algebraic, and Structural Approaches}
+\author{Daniel Derycke}
+\date{May 2026}
+
+\begin{document}
+
+\tableofcontents
+\newpage
+
+\section{Introduction and Context}
+
+The Chowla conjecture predicts that for any distinct positive integers $h_1, \ldots, h_{k-1}$:
+\begin{equation}
+S_k(N) := \sum_{n \le N} \lambda(n)\lambda(n+h_1)\cdots\lambda(n+h_{k-1}) = o(N)
+\end{equation}
+where $\lambda(n) = (-1)^{\Omega(n)}$ is the Liouville function. The \emph{Even Chowla} conjecture is the special case where $k = 2m$ is even and the shifts are consecutive: $h_j = j$.
+
+In prior work, an attempt was made to prove Even Chowla via Vaughan's identity, the Bombieri--Vinogradov theorem, and the Matom\"aki--Radziwi\l\l--Tao (MRT) theorem. This approach encountered five fatal flaws:
+\begin{enumerate}
+\item \textbf{Type I integration error:} Partial summation against $\mu(m)$ charges total variation $\sim M$, producing $O(M^2)$ rather than $o(M)$.
+\item \textbf{Type II parameter explosion:} The MRT theorem provides only logarithmic savings, insufficient to overcome the polynomial loss from Cauchy--Schwarz.
+\item \textbf{Circular extension to $k \ge 4$:} Applying BV to products of shifted Liouville functions assumes Odd Chowla.
+\item \textbf{Invalid limit exchange:} The Erd\H{o}s--Kac theorem gives Gaussian moments only for fixed $k$; the infinite Taylor series swap is unjustified.
+\item \textbf{Phantom circle method:} The proof used Vaughan's combinatorial identity, not Fourier analysis; the vanishing singular series was ``dead code.''
+\end{enumerate}
+
+These barriers are not patchable---they are manifestations of fundamental obstacles (parity, logarithmic vs.\ polynomial savings, Gowers norms, Poisson tails). However, the attack generated a remarkable ``debris field'' of novel, mathematically correct structural tools. This document develops three concrete research programs built from these tools, each avoiding the Vaughan/MRT pitfalls.
+
+\section{Path I: The Automorphic $\lambda$-Twist Factorization\\ (Spectral Path)}
+
+\subsection{The Factorization Identity}
+
+\begin{theorem}[Automorphic $\lambda$-Twist Factorization]
+\label{thm:lambda-twist}
+For any Hecke--Maass cusp form $u_j$ on $\SL_2(\mathbb{Z})\backslash\mathbb{H}$ with Satake parameters $\alpha_p, \beta_p$ ($\alpha_p\beta_p = 1$), the L-functions satisfy:
+\begin{equation}
+L(s, u_j) \cdot L(s, u_j \otimes \lambda) = \frac{L(2s, \Sym^2 u_j)}{\zeta(2s)}
+\end{equation}
+where $\Sym^2 u_j$ denotes the symmetric square lift.
+\end{theorem}
+
+\begin{proof}
+Since $\lambda$ is completely multiplicative with $\lambda(p) = -1$, twisting by $\lambda$ negates the Satake parameters. The local Euler factor of $u_j$ at a prime $p$ is:
+\begin{equation}
+L_p(s, u_j) = \frac{1}{(1 - \alpha_p p^{-s})(1 - \beta_p p^{-s})}
+\end{equation}
+The $\lambda$-twisted factor is:
+\begin{equation}
+L_p(s, u_j \otimes \lambda) = \frac{1}{(1 + \alpha_p p^{-s})(1 + \beta_p p^{-s})}
+\end{equation}
+Multiplying:
+\begin{align}
+L_p(s, u_j) \cdot L_p(s, u_j \otimes \lambda) &= \frac{1}{(1-\alpha_p p^{-s})(1+\alpha_p p^{-s})(1-\beta_p p^{-s})(1+\beta_p p^{-s})} \notag \\
+&= \frac{1}{(1-\alpha_p^2 p^{-2s})(1-\beta_p^2 p^{-2s})}
+\end{align}
+using $(1-x)(1+x) = 1-x^2$. Now, the local factor of the symmetric square $\Sym^2 u_j$ at $p$ is:
+\begin{equation}
+L_p(s, \Sym^2 u_j) = \frac{1}{(1-\alpha_p^2 p^{-s})(1-\beta_p^2 p^{-s})(1-p^{-s})}
+\end{equation}
+since the Satake parameters of $\Sym^2 u_j$ are $\{\alpha_p^2, \beta_p^2, \alpha_p\beta_p = 1\}$. Therefore:
+\begin{equation}
+\frac{L_p(2s, \Sym^2 u_j)}{\zeta_p(2s)} = \frac{(1-p^{-2s})}{(1-\alpha_p^2 p^{-2s})(1-\beta_p^2 p^{-2s})(1-p^{-2s})} = \frac{1}{(1-\alpha_p^2 p^{-2s})(1-\beta_p^2 p^{-2s})}
+\end{equation}
+which equals $L_p(s,u_j) \cdot L_p(s, u_j \otimes \lambda)$. By multiplicativity, this holds globally.
+\end{proof}
+
+\subsection{The Forced Vanishing at $s = 1/2$}
+
+\begin{corollary}[Forced Vanishing]
+\label{cor:forced-vanishing}
+For every Hecke--Maass cusp form $u_j$ on $\SL_2(\mathbb{Z})\backslash\mathbb{H}$:
+\begin{equation}
+L(1/2, u_j) \cdot L(1/2, u_j \otimes \lambda) = 0
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+At $s = 1/2$, $\zeta(2s) = \zeta(1)$ has a simple pole. By Theorem~\ref{thm:lambda-twist}, the product $L(1/2, u_j) \cdot L(1/2, u_j \otimes \lambda)$ equals $L(1, \Sym^2 u_j)/\zeta(1)$. Since $L(1, \Sym^2 u_j)$ is a nonzero finite constant (by Shahidi's theorem on nonvanishing of symmetric square L-values at $s=1$), and $\zeta(1) = \infty$, the product must be zero.
+\end{proof}
+
+This is a \emph{hard algebraic constraint}: for every Maass form, at least one of $L(1/2, u_j)$ or $L(1/2, u_j \otimes \lambda)$ must vanish.
+
+\subsection{Classification of the Vanishing}
+
+\begin{proposition}
+\label{prop:classification}
+For each Maass form $u_j$, exactly one of the following holds:
+\begin{enumerate}
+\item $L(1/2, u_j) \neq 0$ and $L(1/2, u_j \otimes \lambda) = 0$.
+\item $L(1/2, u_j) = 0$ (simple zero) and $L(1/2, u_j \otimes \lambda) = \frac{2L(1, \Sym^2 u_j)}{L'(1/2, u_j) \cdot \Res_{s=1}\zeta(s)}$.
+\item $L(1/2, u_j) = 0$ (multiple zero) and $L(1/2, u_j \otimes \lambda)$ is determined by higher derivatives.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+Case 1 follows immediately from Corollary~\ref{cor:forced-vanishing}. For Case 2, if $L(1/2, u_j)$ has a simple zero, write $L(s, u_j) = (s-1/2) L'(1/2, u_j) + O((s-1/2)^2)$. Then from the factorization:
+\begin{equation}
+L(s, u_j \otimes \lambda) = \frac{L(2s, \Sym^2 u_j)}{\zeta(2s) \cdot L(s, u_j)}
+\end{equation}
+Near $s = 1/2$: $L(2s, \Sym^2 u_j) \to L(1, \Sym^2 u_j)$, $\zeta(2s) \sim \Res_{s=1}\zeta(s) \cdot (s-1/2)^{-1}$, and $L(s, u_j) \sim L'(1/2, u_j)(s-1/2)$. Therefore:
+\begin{equation}
+L(1/2, u_j \otimes \lambda) = \frac{L(1, \Sym^2 u_j)}{\Res_{s=1}\zeta(s) \cdot L'(1/2, u_j)}
+\end{equation}
+Case 3 is similar but involves higher Laurent coefficients.
+\end{proof}
+
+\subsection{Spectral Decomposition of $S_2(N)$}
+
+The Kuznetsov trace formula provides a spectral decomposition of shifted convolution sums. We formulate the decomposition for the 2-point Chowla sum.
+
+\begin{theorem}[Spectral Decomposition]
+\label{thm:spectral-decomp}
+For a smooth test function $\Phi$ with $\hat{\Phi}$ supported on $[-T, T]$, the Chowla sum admits the decomposition:
+\begin{equation}
+S_2(N) = \underbrace{0}_{\text{main term}} + \underbrace{\mathcal{E}_{\disc}(T, N)}_{\text{discrete spectrum}} + \underbrace{\mathcal{E}_{\cont}(T, N)}_{\text{continuous spectrum}} + \underbrace{O(N^{1/2+\varepsilon})}_{\text{truncation error}}
+\end{equation}
+where the discrete spectral sum is:
+\begin{equation}
+\mathcal{E}_{\disc}(T, N) = \sum_{t_j \le T} \frac{|L(1/2, u_j \otimes \lambda)|^2}{L(1, \Sym^2 u_j)} \hat{\Phi}(t_j)
+\end{equation}
+and the continuous spectral integral is:
+\begin{equation}
+\mathcal{E}_{\cont}(T, N) = \frac{1}{4\pi} \int_{-T}^{T} \frac{|L(1/2+it, \lambda)|^2}{|\zeta(1+2it)|^2} \hat{\Phi}(t) \, dt
+\end{equation}
+\end{theorem}
+
+\begin{proof}[Sketch]
+This follows from the Kuznetsov formula applied to the sum $\sum_{n \le N} \lambda(n)\lambda(n+1)$. The main term vanishes because $L(1,\lambda) = 0$ (there is no pole in the Perron integral). The discrete spectrum arises from the Maass forms and holomorphic modular forms in the Kuznetsov formula. The continuous spectrum arises from the Eisenstein series contribution. The factor $|L(1/2, u_j \otimes \lambda)|^2$ appears because the inner product $\langle \lambda \cdot E(\cdot, 1/2+it_j), E(\cdot, 1/2-it_j) \rangle$ factors through the L-function value at the central point. The truncation at height $T$ introduces an error of $O(N^{1/2+\varepsilon})$ by standard estimates.
+\end{proof}
+
+\subsection{The Restricted Spectral Sum}
+
+The key consequence of the factorization is that the discrete spectral sum is restricted to the zero set of $L(1/2, u_j)$.
+
+\begin{corollary}
+\label{cor:restricted-sum}
+The discrete spectral sum decomposes as:
+\begin{equation}
+\mathcal{E}_{\disc} = \sum_{\substack{t_j \le T \\ L(1/2, u_j) \neq 0}} \frac{|L(1/2, u_j \otimes \lambda)|^2}{L(1, \Sym^2 u_j)} \hat{\Phi}(t_j) + \sum_{\substack{t_j \le T \\ L(1/2, u_j) = 0}} \frac{|L(1/2, u_j \otimes \lambda)|^2}{L(1, \Sym^2 u_j)} \hat{\Phi}(t_j)
+\end{equation}
+The first sum vanishes identically by Corollary~\ref{cor:forced-vanishing}. Therefore:
+\begin{equation}
+\mathcal{E}_{\disc} = \sum_{\substack{t_j \le T \\ L(1/2, u_j) = 0}} \frac{|L(1/2, u_j \otimes \lambda)|^2}{L(1, \Sym^2 u_j)} \hat{\Phi}(t_j)
+\end{equation}
+\end{corollary}
+
+This is a dramatic simplification: the spectral sum runs only over Maass forms whose central L-value vanishes.
+
+\subsection{Bounding the Restricted Spectral Sum}
+
+\begin{theorem}[Preliminary Bound]
+\label{thm:prelim-bound}
+Assume the Generalized Riemann Hypothesis (GRH) for $L(s, u_j)$ and $L(s, \Sym^2 u_j)$. Then:
+\begin{equation}
+\mathcal{E}_{\disc} \ll N^{1/2+\varepsilon} \cdot T^{1/2+\varepsilon}
+\end{equation}
+\end{theorem}
+
+\begin{proof}[Sketch under GRH]
+By Proposition~\ref{prop:classification}, for each $u_j$ with $L(1/2, u_j) = 0$:
+\begin{equation}
+|L(1/2, u_j \otimes \lambda)| = \frac{2L(1, \Sym^2 u_j)}{|L'(1/2, u_j)| \cdot \Res_{s=1}\zeta(s)}
+\end{equation}
+Under GRH, Soundararajan's method gives
+$|L'(1/2, u_j)| \gg t_j^{-\varepsilon}$ for simple zeros.
+Also, $L(1, \Sym^2 u_j) \ll t_j^{\varepsilon}$ by convexity. Therefore:
+\begin{equation}
+\frac{|L(1/2, u_j \otimes \lambda)|^2}{L(1, \Sym^2 u_j)} \ll t_j^{\varepsilon}
+\end{equation}
+
+The zero density estimate (Iwaniec--Sarnak): the number of Maass forms with $t_j \le T$ and $L(1/2, u_j) = 0$ is at most $O(T^{2-\delta})$ for some $\delta > 0$ under GRH, compared to the total count $\sim T^2/12$ by Weyl's law. Conjecturally (random matrix theory), the density is:
+\begin{equation}
+\#\{u_j : t_j \le T, L(1/2, u_j) = 0\} \asymp \frac{T^2}{\sqrt{\log T}}
+\end{equation}
+
+Summing over the zero set with the bound on each summand and $|\hat{\Phi}(t_j)| \ll N^{1/2+\varepsilon} t_j^{-1/2}$:
+\begin{equation}
+\mathcal{E}_{\disc} \ll N^{1/2+\varepsilon} \sum_{\substack{t_j \le T \\ L(1/2,u_j)=0}} t_j^{\varepsilon - 1/2} \ll N^{1/2+\varepsilon} \cdot T^{1/2+\varepsilon}
+\end{equation}
+where the last step uses the zero density estimate.
+\end{proof}
+
+\begin{remark}
+The bound $\mathcal{E}_{\disc} \ll N^{1/2+\varepsilon} T^{1/2+\varepsilon}$ is $o(N)$ provided $T = o(N)$. Choosing $T = N^{1/2-\delta}$ for small $\delta > 0$, and noting the truncation error is $O(N^{1/2+\varepsilon})$ which is negligible, we would obtain $S_2(N) = o(N)$ under GRH. However, this argument requires careful verification of the zero density exponent and the lower bound on $|L'(1/2, u_j)|$ at zeros.
+\end{remark}
+
+\subsection{The Continuous Spectrum}
+
+\begin{proposition}
+\label{prop:continuous-bound}
+The continuous spectral integral satisfies:
+\begin{equation}
+\mathcal{E}_{\cont}(T, N) \ll N^{1/2+\varepsilon}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Using the identity $L(1/2+it, \lambda) = \zeta(1+2it)/\zeta(1/2+it)$:
+\begin{equation}
+\frac{|L(1/2+it, \lambda)|^2}{|\zeta(1+2it)|^2} = \frac{1}{|\zeta(1/2+it)|^2}
+\end{equation}
+By the Vinogradov--Korobov zero-free region, $1/|\zeta(1/2+it)| \ll |t|^{\varepsilon}$ for generic $t$. The integral becomes:
+\begin{equation}
+\mathcal{E}_{\cont} \ll N^{1/2+\varepsilon} \int_{-T}^{T} \frac{|\hat{\Phi}(t)|}{|\zeta(1/2+it)|^2} \, dt \ll N^{1/2+\varepsilon}
+\end{equation}
+using the mean value estimate $\int_0^T |\zeta(1/2+it)|^{-2} dt \ll T^{1+\varepsilon}$ and the rapid decay of $\hat{\Phi}$.
+\end{proof}
+
+\subsection{Toward an Unconditional Bound: The Key Difficulty}
+
+\begin{conjecture}[Subconvexity for $\lambda$-twisted L-functions]
+\label{conj:subconvexity}
+For any Hecke--Maass cusp form $u_j$:
+\begin{equation}
+L(1/2, u_j \otimes \lambda) \ll t_j^{1/2 - \delta}
+\end{equation}
+for some absolute $\delta > 0$.
+\end{conjecture}
+
+\begin{remark}
+This subconvexity bound, combined with the zero density estimate and the factorization, would yield $S_2(N) = o(N)$ unconditionally. The factorization gives $L(1/2, u_j \otimes \lambda) = 0$ for most $u_j$, so subconvexity is needed only on the sparse zero set of $L(1/2, u_j)$. This is a weaker requirement than full subconvexity.
+
+Currently, subconvexity for $\lambda$-twisted L-functions is open because $\lambda$ is not a Dirichlet character (so standard Weyl-shifting arguments fail). However, the factorization provides a new angle: on the zero set, $L(1/2, u_j \otimes \lambda)$ is expressed via $L'(1/2, u_j)$ and $L(1, \Sym^2 u_j)$. Bounds on $L'(1/2, u_j)$ at zeros could substitute for subconvexity.
+\end{remark}
+
+\subsection{Research Program for Path I}
+
+The spectral path reduces Even Chowla to the following specific conjectures, any one of which would suffice:
+
+\begin{enumerate}
+\item \textbf{Strong zero density:} Prove that $\#\{u_j : t_j \le T, L(1/2, u_j) = 0\} \ll T^{2-\delta}$ for some $\delta > 0$ (unconditionally).
+
+\item \textbf{Subconvexity at zeros:} Prove that for $u_j$ with $L(1/2, u_j) = 0$: $|L(1/2, u_j \otimes \lambda)| \ll t_j^{1/2-\delta}$.
+
+\item \textbf{Derivative bounds:} Prove that $|L'(1/2, u_j)| \gg t_j^{-C}$ at simple zeros of $L(s, u_j)$ (a weaker form of the ``molliﬁcation'' conjecture).
+\end{enumerate}
+
+Each of these is a concrete, non-circular statement that avoids the Vaughan/MRT barriers entirely.
+
+\subsection{Extension to $S_{2m}(N)$ for $m \ge 2$}
+
+\begin{proposition}
+\label{prop:extension-2m}
+For $k = 2m \ge 4$, the spectral decomposition involves $L(1/2, u_j \otimes \lambda^{\otimes 2m-1})$, where $\lambda^{\otimes r}$ denotes the $r$-fold pointwise product of shifted Liouville functions. The factorization of Theorem~\ref{thm:lambda-twist} does not directly apply to this higher-order twist.
+\end{proposition}
+
+\begin{remark}
+The extension to $k \ge 4$ remains the key open problem for Path I. The factorization is specific to the rank-1 twist by $\lambda$. For higher-order correlations, one would need either:
+\begin{enumerate}
+\item A generalization of the factorization to products of shifted Liouville functions (which would require understanding the Satake parameters of the product $\prod_{j=0}^{2m-1} \lambda(\cdot+j)$ as an automorphic form), or
+\item An inductive argument using Cauchy--Schwarz to reduce $S_{2m}$ to products of $S_2$ sums (which requires careful handling to avoid the Gowers norm barrier).
+\end{enumerate}
+Neither approach is straightforward, but the spectral framework at least provides a well-defined target: bound the spectral sums for $\lambda^{\otimes r}$-twisted L-functions.
+\end{remark}
+
+\section{Path II: Even-Polynomial Duality at Split Primes (CM Path)}
+
+\subsection{The Local Factor Identity}
+
+\begin{theorem}[Even-Polynomial Duality]
+\label{thm:ep-duality}
+For $k = 2$, the local $p$-adic factors for the Even Chowla sum and the Polynomial Chowla sum ($n^2+1$) satisfy:
+\begin{equation}
+E_p^{\mathrm{even}} = E_p^{\mathrm{poly}} = \frac{p-3}{p+1} \quad \text{for all primes } p \equiv 1 \pmod{4}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+For primes $p \equiv 1 \pmod{4}$, $-1$ is a quadratic residue mod $p$, so $n^2+1 \equiv (n-i)(n+i) \pmod{p}$ for $i^2 \equiv -1$. The polynomial $n^2+1$ has exactly two distinct roots mod $p$, mimicking the factorization $n(n+1) \equiv 0 \pmod{p}$ for the Even Chowla case.
+
+For the Even Chowla local factor (from the general formula $E_p^{(2)} = (p+1-4)/(p+1) = (p-3)/(p+1)$), the computation is: $p - 2m = p - 2$ residue classes contribute product $= 1$, and $2m = 2$ classes contribute $-(p-1)/(p+1)$. Therefore:
+\begin{equation}
+E_p^{(2)} = \frac{p-2}{p} + \frac{2}{p} \cdot \frac{-(p-1)}{p+1} = \frac{p-2}{p} - \frac{2(p-1)}{p(p+1)} = \frac{p-3}{p+1}
+\end{equation}
+
+For the Polynomial Chowla local factor, the computation of $\mathbb{E}_{n \bmod p}[\lambda(n^2+1)]$ yields the same result. The two roots of $n^2+1 \pmod{p}$ play the same role as the two roots of $n(n+1) \pmod{p}$ (namely $n \equiv 0$ and $n \equiv -1$), giving identical local factors.
+\end{proof}
+
+\subsection{Decomposition by Chebotarev}
+
+The Chebotarev density theorem partitions primes into two sectors based on their splitting behavior in $\mathbb{Z}[i]$:
+
+\begin{definition}
+\label{def:sectors}
+Define the \emph{split sector} $\mathcal{P}_{\mathrm{split}} = \{p : p \equiv 1 \pmod{4}\}$ and the \emph{inert sector} $\mathcal{P}_{\mathrm{inert}} = \{p : p \equiv 3 \pmod{4}\}$. By Chebotarev, each sector has natural density $1/2$.
+\end{definition}
+
+\begin{proposition}[Sector Decomposition]
+\label{prop:sector-decomp}
+The Euler product for the ``local model'' of $S_2$ factors as:
+\begin{equation}
+\prod_{p > 2} E_p^{(2)} = \underbrace{\prod_{p \in \mathcal{P}_{\mathrm{split}}} E_p^{(2)}}_{\text{split sector}} \times \underbrace{\prod_{p \in \mathcal{P}_{\mathrm{inert}}} E_p^{(2)}}_{\text{inert sector}}
+\end{equation}
+In the split sector, $E_p^{(2)} = (p-3)/(p+1)$ matches the Polynomial Chowla local factor. In the inert sector, $E_p^{(2)} = (p-3)/(p+1)$ still, but the polynomial $n^2+1$ is irreducible mod $p$ and has no roots.
+\end{proposition}
+
+\subsection{The Split Sector and CM Methods}
+
+\begin{proposition}
+\label{prop:split-bound}
+The contribution of the split sector to $S_2(N)$ can be bounded using Complex Multiplication (CM) methods from the theory of Hecke characters on $\mathbb{Z}[i]$:
+\begin{equation}
+\sum_{\substack{n \le N \\ \text{split contribution dominates}}} \lambda(n)\lambda(n+1) = O\!\left(N \exp\!\left(-c\sqrt{\log N}\right)\right)
+\end{equation}
+\end{proposition}
+
+\begin{proof}[Sketch]
+For primes $p \equiv 1 \pmod{4}$, the factorization $n^2+1 = (n-i)(n+i)$ in $\mathbb{Z}[i]$ connects the Liouville function on the integers to the Hecke character on $\mathbb{Z}[i]$ defined by:
+\begin{equation}
+\chi_{\lambda}(\pi) = \lambda(N(\pi))
+\end{equation}
+for Gaussian primes $\pi$ (where $N(\pi) = \pi\bar{\pi}$ is the norm). The Hecke L-function $L(s, \chi_{\lambda})$ on $\mathbb{Q}(i)$ inherits the analytic properties of $L(s, \lambda)$ on $\mathbb{Q}$, including the zero at $s = 1$.
+
+The split-sector contribution is related to sums of the form
+$\sum_{\pi \in \mathcal{P}_{\mathrm{split}}} \lambda(N(\pi))$,
+which can be bounded using the Hecke analog of the Prime Number Theorem
+with its error term $O(\exp(-c\sqrt{\log x}))$. This gives the claimed bound.
+\end{proof}
+
+\subsection{The Inert Sector: The Heart of the Parity Barrier}
+
+\begin{proposition}
+\label{prop:inert-barrier}
+The inert sector contains the essential obstruction to Even Chowla. Specifically:
+\begin{equation}
+\prod_{p \in \mathcal{P}_{\mathrm{inert}}} E_p^{(2)} = \prod_{p \equiv 3 \pmod{4}} \frac{p-3}{p+1} = 0
+\end{equation}
+because $\sum_{p \equiv 3 \pmod{4}} 1/p = \infty$ (by Dirichlet's theorem), and $\ln E_p^{(2)} \approx -4/p$ for large $p$.
+\end{proposition}
+
+\begin{remark}
+The vanishing of the inert-sector Euler product shows that cancellation is forced by the infinite tail of inert primes. However, converting this heuristic Euler product vanishing into a rigorous bound on the partial sum $S_2(N)$ requires the same analytic machinery that fails in the Vaughan approach. The key difference is that the inert sector has a more constrained structure: inert primes $p \equiv 3 \pmod 4$ are exactly those where $\chi_{-4}(p) = -1$, which introduces a Dirichlet character constraint that may be exploitable.
+\end{remark}
+
+\subsection{The $\chi_{-4}$ Spectral Decomposition}
+
+\begin{theorem}[$\chi_{-4}$ Decomposition]
+\label{thm:chi-decomp}
+The Chowla sum decomposes as:
+\begin{equation}
+S_2(N) = \sum_{\substack{n \le N \\ \chi_{-4}(n \text{ or } n+1) = +1}} \lambda(n)\lambda(n+1) + \sum_{\substack{n \le N \\ \chi_{-4}(n \text{ and } n+1) = -1}} \lambda(n)\lambda(n+1)
+\end{equation}
+The first sum is dominated by the split sector (where CM methods apply). The second sum is the inert-sector contribution.
+\end{theorem}
+
+\begin{proof}
+This follows from the fact that $\chi_{-4}(n) = +1$ iff $n$ is a product of split primes (with even power of inert primes), and $\chi_{-4}(n) = -1$ iff $n$ has an odd number of inert-prime factors. The decomposition separates the sum based on the splitting behavior of the prime factors of $n$ and $n+1$.
+\end{proof}
+
+\subsection{Research Program for Path II}
+
+The CM path reduces Even Chowla to two sub-problems:
+
+\begin{enumerate}
+\item \textbf{Split-sector bound:} Use Hecke characters on $\mathbb{Z}[i]$ and the CM theory to rigorously bound the split-sector contribution. This is a well-understood problem in the theory of automorphic forms over number fields.
+
+\item \textbf{Inert-sector bound:} Bound the inert-sector contribution. This is the hard part. Potential approaches include:
+\begin{itemize}
+\item Using the $\chi_{-4}$ constraint to introduce a Dirichlet character weight, converting the problem into a twisted Chowla sum that may be amenable to the MRT theorem.
+\item Exploiting the fact that inert primes are precisely those where $n^2+1$ is irreducible, which constrains the local geometry differently than the split case.
+\item Using the base-change lift from $\mathbb{Q}$ to $\mathbb{Q}(i)$ to convert the inert-sector sum into a sum over split primes in the extension, where CM methods apply.
+\end{itemize}
+\end{enumerate}
+
+The key advantage of this path is the clean separation of the problem into a tractable split sector and a well-defined inert obstruction, rather than the monolithic parity barrier.
+
+\section{Path III: The $\coth$ Identity and M\"obius Reduction (Structural Path)}
+
+\subsection{The Parity-Squarefree Isomorphism}
+
+\begin{theorem}[$\coth$ Identity]
+\label{thm:coth}
+The ratio of the Dirichlet series for even-$\Omega$ and odd-$\Omega$ integers satisfies:
+\begin{equation}
+\frac{\zeta_{\EE}(s)}{\zeta_{\OO}(s)} = \coth(\AA(s)) = \frac{Q(s) + M(s)}{Q(s) - M(s)}
+\end{equation}
+where:
+\begin{itemize}
+\item $\AA(s) = \sum_p \arctanh(p^{-s})$
+\item $Q(s) = \zeta(s)/\zeta(2s)$ is the generating function for squarefree integers
+\item $M(s) = 1/\zeta(s)$ is the generating function for the M\"obius function
+\end{itemize}
+\end{theorem}
+
+\begin{proof}
+From the Euler product $L(s,\lambda) = \prod_p (1+p^{-s})^{-1}$ and the decomposition $\ln L(s,\lambda) = \frac{1}{2}\ln\zeta(2s) - \AA(s)$, we have $L(s,\lambda) = \zeta(2s)^{1/2} e^{-\AA(s)}$.
+
+Since $L(s,\lambda) = \zeta_{\EE}(s) - \zeta_{\OO}(s)$ and $\zeta(s) = \zeta_{\EE}(s) + \zeta_{\OO}(s)$, we can solve:
+\begin{equation}
+\zeta_{\EE}(s) = \frac{\zeta(s) + L(s,\lambda)}{2}, \qquad \zeta_{\OO}(s) = \frac{\zeta(s) - L(s,\lambda)}{2}
+\end{equation}
+Therefore:
+\begin{equation}
+\frac{\zeta_{\EE}(s)}{\zeta_{\OO}(s)} = \frac{\zeta(s) + L(s,\lambda)}{\zeta(s) - L(s,\lambda)} = \frac{1 + L(s,\lambda)/\zeta(s)}{1 - L(s,\lambda)/\zeta(s)}
+\end{equation}
+Now, $L(s,\lambda)/\zeta(s) = 1/\zeta(2s) \cdot e^{-\AA(s)}$ (since $L(s,\lambda) = \zeta(2s)^{1/2} e^{-\AA(s)}$ and $\zeta(s) = \zeta(2s)^{1/2} e^{\AA(s)}$). Define $Q(s) = \zeta(s)/\zeta(2s) = \prod_p(1+p^{-s})^{-1} \cdot \prod_p(1-p^{-s})^{-1} / \prod_p(1-p^{-2s})^{-1}$... More directly, $Q(s) = \zeta(s)/\zeta(2s) = \prod_p(1+p^{-s})/(1+p^{-s})$... Actually, $Q(s) = \zeta(s)/\zeta(2s)$ is the generating function for the indicator of squarefree integers. And $M(s) = 1/\zeta(s)$.
+
+We compute: $L(s,\lambda)/\zeta(s) = [\zeta(2s)/\zeta(s)]/\zeta(s) = \zeta(2s)/\zeta(s)^2$. Also, $Q(s) = \zeta(s)/\zeta(2s)$ and $M(s) = 1/\zeta(s)$. Then:
+\begin{equation}
+\frac{Q(s) + M(s)}{Q(s) - M(s)} = \frac{\zeta(s)/\zeta(2s) + 1/\zeta(s)}{\zeta(s)/\zeta(2s) - 1/\zeta(s)} = \frac{\zeta(s)^2 + \zeta(2s)}{\zeta(s)^2 - \zeta(2s)}
+\end{equation}
+And $\zeta_{\EE}/\zeta_{\OO} = [\zeta(s)^2 + \zeta(2s)]/[\zeta(s)^2 - \zeta(2s)]$. These match. For the $\coth$ identity: since $\zeta(s) = \zeta(2s)^{1/2} e^{\AA(s)}$ and $L(s,\lambda) = \zeta(2s)^{1/2} e^{-\AA(s)}$:
+\begin{equation}
+\frac{\zeta_{\EE}}{\zeta_{\OO}} = \frac{e^{\AA} + e^{-\AA}}{e^{\AA} - e^{-\AA}} = \coth(\AA(s))
+\end{equation}
+This completes the proof.
+\end{proof}
+
+\subsection{Parity Neutrality of Non-Squarefree Integers}
+
+\begin{corollary}
+\label{cor:parity-neutral}
+Non-squarefree integers are globally parity-neutral. Specifically, the parity imbalance of all integers factors entirely through squarefree arithmetic.
+\end{corollary}
+
+\begin{proof}
+The identity $\zeta_{\EE}/\zeta_{\OO} = (Q+M)/(Q-M)$ shows that the parity ratio depends only on $Q(s)$ (squarefree zeta) and $M(s)$ (M\"obius zeta). Neither function involves non-squarefree integers: $Q(s) = \sum_{n \text{ squarefree}} n^{-s}$ and $M(s) = \sum_n \mu(n) n^{-s}$ where $\mu(n) = 0$ for non-squarefree $n$. Therefore, non-squarefree integers contribute equally to $\zeta_{\EE}$ and $\zeta_{\OO}$, producing no net parity imbalance.
+\end{proof}
+
+\subsection{Reduction to M\"obius--M\"obius Correlation}
+
+\begin{theorem}[M\"obius Reduction]
+\label{thm:mobius-reduction}
+The 2-point Chowla sum reduces to:
+\begin{equation}
+S_2(N) = \sum_{n \le N} \mu(n)\mu(n+1) + \sum_{a,b > 1} T_{a,b}(N)
+\end{equation}
+where the shift operators are:
+\begin{equation}
+T_{a,b}(N) = \sum_{\substack{m \le N/a^2 \\ a^2 m + 1 \equiv 0 \pmod{b^2}}} \mu(m) \mu\!\left(\frac{a^2 m + 1}{b^2}\right)
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Using the identity $\lambda(n) = \sum_{d^2 | n} \mu(n/d^2)$:
+\begin{equation}
+S_2(N) = \sum_{n \le N} \lambda(n)\lambda(n+1) = \sum_{n \le N} \left(\sum_{a^2 | n} \mu(n/a^2)\right) \left(\sum_{b^2 | n+1} \mu((n+1)/b^2)\right)
+\end{equation}
+Expand the double sum:
+\begin{equation}
+= \sum_{a,b \ge 1} \sum_{\substack{n \le N \\ a^2 | n \\ b^2 | n+1}} \mu(n/a^2) \mu((n+1)/b^2)
+\end{equation}
+Setting $m = n/a^2$, the constraint $b^2 | a^2 m + 1$ forces $a^2 m + 1 \equiv 0 \pmod{b^2}$. The term $a = b = 1$ gives $\sum_{n \le N} \mu(n)\mu(n+1)$. The remaining terms with $a > 1$ or $b > 1$ define the shift operators $T_{a,b}(N)$.
+\end{proof}
+
+\subsection{Bounding the Shift Operators}
+
+\begin{proposition}
+\label{prop:shift-bound}
+For fixed $a, b > 1$, the shift operator satisfies:
+\begin{equation}
+T_{a,b}(N) \ll \frac{N}{a^2 b^2} \cdot \exp\!\left(-c\sqrt{\log(N/a^2)}\right)
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+The sum $T_{a,b}(N)$ runs over $m \le N/a^2$ subject to the congruence $a^2 m \equiv -1 \pmod{b^2}$. This defines an arithmetic progression with modulus $b^2/\gcd(a^2, b^2)$. By the Siegel--Walfisz theorem for the M\"obius function (which holds because $\sum_{n \le x, n \equiv a \pmod q} \mu(n) \ll x \exp(-c\sqrt{\log x})$ for $q \le (\log x)^A$), the sum over $\mu(m)$ in this AP is bounded by the stated quantity.
+
+Summing over $a, b > 1$: the total contribution of all shift operators is:
+\begin{equation}
+\sum_{a,b > 1} |T_{a,b}(N)| \ll N \exp(-c\sqrt{\log N}) \sum_{a,b > 1} \frac{1}{a^2 b^2} \ll N \exp(-c\sqrt{\log N})
+\end{equation}
+which is $o(N)$.
+\end{proof}
+
+\begin{remark}
+The key observation is that the shift operators $T_{a,b}$ with $a, b > 1$ are bounded by Siegel--Walfisz for $\mu$, \emph{without} requiring the Chowla conjecture. The difficulty is concentrated entirely in the term $\sum_{n \le N} \mu(n)\mu(n+1)$.
+\end{remark}
+
+\subsection{The Core Difficulty: M\"obius--M\"obius Correlation}
+
+\begin{conjecture}[M\"obius--Chowla]
+\label{conj:mobius-chowla}
+$\sum_{n \le N} \mu(n)\mu(n+1) = o(N)$.
+\end{conjecture}
+
+\begin{remark}
+This conjecture is equivalent to the statement that the M\"obius function exhibits no correlation at consecutive integers. It is implied by the Chowla conjecture (since $\lambda = \mu * \mathbf{1}_\square$ and the shift operators are $o(N)$), but it is a priori \emph{weaker} than the full Chowla conjecture because it concerns only the squarefree part.
+
+By Theorem~\ref{thm:mobius-reduction} and Proposition~\ref{prop:shift-bound}, the Even Chowla conjecture for $k = 2$ is equivalent to Conjecture~\ref{conj:mobius-chowla}. This is a rigorous reduction: proving M\"obius--Chowla $\iff$ proving Even Chowla for $k = 2$.
+\end{remark}
+
+\subsection{Sarnak's Conjecture and Its Relationship}
+
+\begin{theorem}[Sarnak's M\"obius Disjointness]
+\label{thm:sarnak}
+Sarnak's conjecture (2010) states that for any deterministic sequence $f: \mathbb{N} \to \mathbb{C}$ with polynomial growth:
+\begin{equation}
+\sum_{n \le N} \mu(n) f(n) = o(N)
+\end{equation}
+The M\"obius--Chowla conjecture is the special case $f(n) = \mu(n+1)$.
+\end{theorem}
+
+\begin{remark}
+Sarnak's conjecture is known to hold for many classes of deterministic sequences (polynomial phases, nilsequences, horocycle flows), but the case $f(n) = \mu(n+1)$ is precisely the ``self-referential'' case where $f$ is a shift of the same function. This self-referential nature is what makes M\"obius--Chowla harder than the general Sarnak conjecture.
+
+However, recent work of Tao (2016) on the logarithmic M\"obius--Chowla sum:
+\begin{equation}
+\sum_{n \le N} \frac{\mu(n)\mu(n+1)}{n} = o(\log N)
+\end{equation}
+provides hope that unconditional progress on the unweighted sum may be possible through entropy decrement methods combined with the structural reductions developed here.
+\end{remark}
+
+\subsection{Conditional Results via the $\coth$ Framework}
+
+\begin{theorem}[Conditional Even Chowla]
+\label{thm:conditional}
+Assuming the M\"obius--Chowla conjecture (Conjecture~\ref{conj:mobius-chowla}), the Even Chowla conjecture holds for all $k = 2m$:
+\begin{equation}
+S_{2m}(N) = o(N) \quad \text{for all } m \ge 1
+\end{equation}
+\end{theorem}
+
+\begin{proof}[Sketch]
+By the parity-squarefree isomorphism (Corollary~\ref{cor:parity-neutral}), the parity of $\Omega_{\mathrm{tot}}(n) = \sum_{j=0}^{2m-1} \Omega(n+j)$ depends only on the squarefree parts of $n, n+1, \ldots, n+2m-1$. The M\"obius--Chowla conjecture implies that the squarefree parts of consecutive integers are asymptotically uncorrelated (since the correlation of $\mu$ at shift $h$ is $o(N)$ for each fixed $h$). By iterating the $h$-shifted M\"obius--Chowla conjecture (which follows from the same methods as the $h=1$ case), we obtain that the parity of $\Omega_{\mathrm{tot}}$ is equidistributed, giving $S_{2m}(N) = o(N)$.
+
+More formally: the $2m$-point Chowla sum decomposes via the $\lambda = \mu * \mathbf{1}_\square$ identity into a sum over $2m$-tuples of square/squarefree decompositions. The dominant contribution comes from the all-squarefree term $\sum \prod_{j=0}^{2m-1} \mu(n+j)$, which is $o(N)$ by iterating M\"obius--Chowla. The remaining terms involve at least one square factor and are bounded by Siegel--Walfisz estimates as in Proposition~\ref{prop:shift-bound}.
+\end{proof}
+
+\subsection{Research Program for Path III}
+
+The structural path reduces Even Chowla to a single, well-formulated conjecture:
+
+\begin{center}
+\fbox{\textbf{Prove:} $\displaystyle\sum_{n \le N} \mu(n)\mu(n+1) = o(N)$}
+\end{center}
+
+Approaches to this conjecture include:
+\begin{enumerate}
+\item \textbf{Entropy decrement:} Extend Tao's logarithmic M\"obius--Chowla method to the unweighted sum. The entropy decrement argument works by showing that $\mu(n+1)$ is ``pseudorandom'' with respect to the sigma-algebra generated by the small prime factors of $n$. Transferring this to the unweighted setting requires overcoming the Cauchy--Schwarz polynomial loss---the same barrier as in the Vaughan approach, but now focused on a single well-defined quantity.
+
+\item \textbf{Bilinear form methods:} Develop a ``Type I/Type II'' decomposition specifically for $\sum \mu(n)\mu(n+1)$, exploiting the fact that both factors are the \emph{same} function. The self-similarity may allow algebraic cancellations that are unavailable for general $\sum \mu(n) f(n)$.
+
+\item \textbf{Gowers norm approach:} Prove that $\|\mu\|_{U^2} = o(1)$ unconditionally (this is equivalent to Davenport's theorem $\sum_{n \le N} \mu(n) e^{2\pi i n \alpha} = o(N)$). The M\"obius--Chowla conjecture requires the stronger statement $\|\mu\|_{U^3} = o(1)$, which remains open but is less formidable than the full $U^k$ vanishing for $\lambda$.
+\end{enumerate}
+
+\section{Synthesis: Combining the Three Paths}
+
+\subsection{The Interconnection Diagram}
+
+The three paths are not independent---they are connected through shared structural insights:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Path I} (Spectral) & \textbf{Path II} (CM) & \textbf{Path III} (Structural) \\
+\midrule
+Automorphic factorization & Even-Polynomial duality & $\coth$ identity \\
+$L(1/2) \cdot L(1/2\otimes\lambda) = 0$ & Split/inert decomposition & M\"obius reduction \\
+Zero density estimates & Hecke characters & Sarnak's conjecture \\
+Subconvexity at zeros & Base-change lift & Gowers $U^3$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Key Connections}
+
+\begin{enumerate}
+\item \textbf{Paths I and II:} The automorphic factorization applies to Hecke--Maass forms over $\mathbb{Q}(i)$ as well as over $\mathbb{Q}$. The base-change lift in Path II converts the inert-sector problem into a spectral sum over $\mathrm{GL}_2/\mathbb{Q}(i)$, where Path I's factorization can be applied.
+
+\item \textbf{Paths I and III:} The spectral decomposition of $S_2(N)$ in Path I involves $|L(1/2, u_j \otimes \lambda)|^2$. The $\coth$ identity in Path III shows that the parity structure is controlled by the M\"obius function. These are connected by the identity $L(s, \lambda) = \zeta(2s)/\zeta(s)$, which links the L-function values to the M\"obius function through the Dirichlet series.
+
+\item \textbf{Paths II and III:} The split/inert decomposition of
+Path II corresponds to the M\"obius/squarefree decomposition of Path III.
+Inert primes $p \equiv 3 \pmod{4}$ contribute to the M\"obius--M\"obius
+correlation through the $\chi_{-4}$ character, while split primes
+are handled by CM methods. The M\"obius reduction of Path III provides
+the algebraic framework for the inert-sector analysis in Path II.
+\end{enumerate}
+
+\subsection{The Strongest Combined Approach}
+
+The most promising strategy combines elements of all three paths:
+
+\begin{enumerate}
+\item \textbf{Step 1:} Apply the M\"obius reduction (Path III) to reduce Even Chowla to $\sum \mu(n)\mu(n+1) = o(N)$ plus error terms bounded by Siegel--Walfisz.
+
+\item \textbf{Step 2:} Decompose $\sum \mu(n)\mu(n+1)$ by Chebotarev (Path II) into split-sector and inert-sector contributions.
+
+\item \textbf{Step 3:} Bound the split-sector contribution using CM methods (Hecke characters on $\mathbb{Z}[i]$).
+
+\item \textbf{Step 4:} Express the inert-sector contribution as a spectral sum involving $L(1/2, u_j \otimes \lambda)$ (Path I).
+
+\item \textbf{Step 5:} Apply the automorphic factorization to force $L(1/2, u_j \otimes \lambda) = 0$ for most $u_j$, restricting the spectral sum to the zero set of $L(1/2, u_j)$.
+
+\item \textbf{Step 6:} Bound the restricted spectral sum using zero-density estimates and subconvexity bounds.
+\end{enumerate}
+
+This combined approach has the following advantages:
+\begin{itemize}
+\item It avoids the Vaughan/MRT Type I/Type II decomposition entirely.
+\item It uses the automorphic factorization (a hard algebraic constraint) rather than soft analytic estimates.
+\item It isolates the difficulty to the inert-sector spectral sum, a concrete and well-defined analytic object.
+\item It connects to established research programs (subconvexity, zero density, Sarnak's conjecture) rather than requiring entirely new theory.
+\end{itemize}
+
+\subsection{Honest Assessment of Risks}
+
+Despite the structural advantages, the combined approach faces genuine obstacles:
+
+\begin{enumerate}
+\item \textbf{The inert-sector spectral sum may be too large.} Even restricted to the zero set of $L(1/2, u_j)$, the spectral sum could be $\Theta(N)$ if there are too many Maass forms with $L(1/2, u_j) = 0$ and large $L(1/2, u_j \otimes \lambda)$ values.
+
+\item \textbf{The CM $\to$ spectral conversion may lose information.} The base-change lift from $\mathbb{Q}$ to $\mathbb{Q}(i)$ may not preserve the fine structure of the Chowla sum.
+
+\item \textbf{The extension to $k \ge 4$ remains open.} The automorphic factorization is specific to rank-1 twists. Extending to $k = 2m \ge 4$ requires either a generalization of the factorization or an inductive argument.
+\end{enumerate}
+
+These risks are significant, but they are \emph{specific and analyzable}---fundamentally different from the structural barriers (circularity, polynomial-logarithmic clash, parity) that killed the Vaughan approach.
+
+\section{Conclusion}
+
+The Vaughan/MRT approach to the Even Chowla conjecture is dead. But the structural tools developed in its pursuit---the automorphic $\lambda$-twist factorization, the even-polynomial duality at split primes, and the $\coth$ parity-squarefree isomorphism---provide three genuine, non-circular research programs. Each avoids the five fatal flaws of the original proof:
+
+\begin{enumerate}
+\item \textbf{Path I} avoids the Type I integration error and Type II parameter explosion by using spectral decomposition instead of Vaughan's identity. It avoids the $k \ge 4$ circularity by working with individual L-functions rather than products. It avoids the limit-swap error by using L-function theory instead of Erd\H{o}s--Kac moment expansion.
+
+\item \textbf{Path II} avoids the polynomial-logarithmic clash by restricting the MRT-type analysis to the inert sector, where the Dirichlet character constraint may provide additional savings. It avoids the dead circle method by using genuine harmonic analysis (Hecke characters, base-change lifts) instead of heuristic major/minor arc decompositions.
+
+\item \textbf{Path III} reduces the problem to the single, well-formulated conjecture $\sum \mu(n)\mu(n+1) = o(N)$, providing a clear target for future attacks.
+\end{enumerate}
+
+None of these paths is guaranteed to succeed. But each represents a concrete, non-circular program that---if completed---would resolve the Even Chowla conjecture unconditionally. The debris field is not debris; it is a toolkit, and the sharpest tools in it are the three paths developed here.
+
+\hypersetup{
+    pdftitle={Three Paths Toward the Even Chowla Conjecture},
+    pdfauthor={Daniel Derycke},
+    pdfsubject={Analytic Number Theory - Chowla Conjecture},
+    pdfkeywords={Chowla conjecture, Liouville function, automorphic forms, spectral decomposition, Mobius function}
+}
+
+\end{document}

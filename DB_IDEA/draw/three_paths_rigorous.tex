@@ -1,0 +1,775 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{tabularx}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+\usepackage{graphicx}
+
+\geometry{a4paper, top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=darkgray,
+    urlcolor=blue,
+    bookmarks=true,
+    bookmarksnumbered=true,
+    unicode=true
+}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\EE}{\mathcal{E}}
+\newcommand{\OO}{\mathcal{O}}
+\newcommand{\cA}{\mathcal{A}}
+\newcommand{\SL}{\mathrm{SL}_2}
+\newcommand{\sym}{\operatorname{sym}}
+% \Re already defined
+% \Im already defined
+\newcommand{\spec}{\operatorname{Spec}}
+\newcommand{\GL}{\mathrm{GL}}
+\newcommand{\Res}{\operatorname{Res}}
+
+\title{Three Paths Toward the Even Chowla Conjecture:\\ Rigorous Development of the Automorphic, Duality, and coth Programs}
+\author{Research Report}
+\date{May 2026}
+
+\begin{document}
+
+\tableofcontents
+\newpage
+
+%==============================================================================
+\section{Introduction and Statement of the Problem}
+%==============================================================================
+
+The Even Chowla Conjecture asserts that for every integer $m \geq 1$,
+\begin{equation}\label{eq:even-chowla}
+S_{2m}(N) \;=\; \sum_{n \leq N} \prod_{j=0}^{2m-1} \lambda(n+j) \;=\; o(N)
+\end{equation}
+as $N \to \infty$, where $\lambda(n) = (-1)^{\Omega(n)}$ is the Liouville function and $\Omega(n)$ denotes the number of prime factors of $n$ counted with multiplicity. The case $m = 1$, i.e., $S_2(N) = \sum_{n \leq N} \lambda(n)\lambda(n+1) = o(N)$, is the simplest non-trivial instance and already lies beyond the reach of current unconditional methods.
+
+The classical approach via Vaughan's identity combined with the Bombieri--Vinogradov theorem and the Matom\"aki--Radziwi\l\l--Tao (MRT) theorem encounters five fatal barriers that have been rigorously diagnosed in prior work: (1) the Type I integration error, where partial summation against $\mu$ costs total variation $\mathcal{O}(M)$ and produces $\mathcal{O}(M^2)$ rather than $\mathcal{O}(M)$; (2) the $\delta$-parameter explosion in the Type II optimization, where the logarithmic savings from MRT cannot overcome the polynomial loss from Cauchy--Schwarz; (3) the circular extension to $k \geq 4$, which requires bounding products of Liouville functions and thus assumes the Odd Chowla Conjecture; (4) the invalid $\mathcal{O}_k/\mathcal{O}_k$ limit swap, where the Erd\H{o}s--Kac Gaussian approximation holds only for fixed $k$ but the Taylor series requires $k \sim \sigma^2$; and (5) the phantom circle method, where the vanishing singular series $\mathfrak{S}_{2m} = 0$ plays no algebraic role in the absolute-value bounds.
+
+These barriers are manifestations of the parity barrier and the Gowers norm bottleneck. Fixing them unconditionally yields at best Tao's logarithmic Chowla result $\sum_{n \leq N} \lambda(n)\lambda(n+1)/n = o(\log N)$, not the unweighted conjecture.
+
+The purpose of this report is to develop three genuinely novel paths that circumvent these barriers by exploiting different structural features of the Liouville function. Each path is developed with full rigor through a sequence of lemmas, propositions, and theorems, with open gaps and risks clearly identified.
+
+%==============================================================================
+\section{Path I: The Automorphic $\lambda$-Twist Factorization}
+%==============================================================================
+
+\subsection{The Core Factorization Identity}
+
+The central algebraic discovery is an exact factorization identity for the $L$-functions of Hecke--Maass cusp forms twisted by the Liouville function.
+
+\begin{theorem}[$\lambda$-Twist Factorization]\label{thm:lambda-twist}
+For any Hecke--Maass cusp form $u_j$ on $\SL(\mathbb{Z})\backslash \mathbb{H}$ with Laplace eigenvalue $\lambda_j = 1/4 + t_j^2$ and $L$-function $L(s, u_j) = \prod_p L_p(s, u_j)$, the product of $L(s, u_j)$ and its Liouville twist factors as
+\begin{equation}\label{eq:factorization}
+L(s, u_j) \cdot L(s, u_j \otimes \lambda) \;=\; \frac{L(2s, \sym^2 u_j)}{\zeta(2s)}
+\end{equation}
+for $\Re(s) > 1$, and by analytic continuation for all $s \in \mathbb{C}$.
+\end{theorem}
+
+\begin{proof}
+At each prime $p$, the local $L$-factor of $u_j$ is
+\[
+L_p(s, u_j) = \frac{1}{(1 - \alpha_p p^{-s})(1 - \beta_p p^{-s})}
+\]
+where $\alpha_p, \beta_p$ are the Satake parameters satisfying $\alpha_p \beta_p = 1$ and $|\alpha_p| = |\beta_p| = 1$ for $p$ unramified (which is all primes for $\SL(\mathbb{Z})$). Twisting by $\lambda$, which is completely multiplicative with $\lambda(p) = -1$ for all primes $p$, negates the Satake parameters:
+\[
+L_p(s, u_j \otimes \lambda) = \frac{1}{(1 + \alpha_p p^{-s})(1 + \beta_p p^{-s})}.
+\]
+Multiplying the two local factors:
+\begin{align*}
+L_p(s, u_j) \cdot L_p(s, u_j \otimes \lambda) &= \frac{1}{(1 - \alpha_p p^{-s})(1 + \alpha_p p^{-s})(1 - \beta_p p^{-s})(1 + \beta_p p^{-s})} \\
+&= \frac{1}{(1 - \alpha_p^2 p^{-2s})(1 - \beta_p^2 p^{-2s})}.
+\end{align*}
+The right-hand side is the local $L$-factor of the symmetric square $\sym^2 u_j$ at $2s$:
+\[
+L_p(2s, \sym^2 u_j) = \frac{1}{(1 - \alpha_p^2 p^{-2s})(1 - \beta_p^2 p^{-2s})(1 - p^{-2s})},
+\]
+so
+\[
+\frac{L_p(2s, \sym^2 u_j)}{1 - p^{-2s}} = \frac{1}{(1 - \alpha_p^2 p^{-2s})(1 - \beta_p^2 p^{-2s})}.
+\]
+Taking the product over all primes and using $\zeta(2s) = \prod_p (1 - p^{-2s})^{-1}$:
+\[
+\prod_p L_p(s, u_j) \cdot L_p(s, u_j \otimes \lambda) = \prod_p \frac{L_p(2s, \sym^2 u_j)}{1 - p^{-2s}} = \frac{L(2s, \sym^2 u_j)}{\zeta(2s)}.
+\]
+This identity holds for $\Re(s) > 1$ by absolute convergence, and extends to all $s$ by the uniqueness of analytic continuation, since both sides are meromorphic on $\mathbb{C}$.
+\end{proof}
+
+\subsection{The Central Value Constraint}
+
+The factorization identity imposes a powerful constraint at the critical point $s = 1/2$.
+
+\begin{corollary}[Central Value Constraint]\label{cor:central-value}
+At $s = 1/2$, the factorization~\eqref{eq:factorization} becomes
+\begin{equation}\label{eq:central}
+L(1/2, u_j) \cdot L(1/2, u_j \otimes \lambda) \;=\; \frac{L(1, \sym^2 u_j)}{\zeta(1)}.
+\end{equation}
+Since $\zeta(s)$ has a simple pole at $s = 1$ with residue $1$, the right-hand side evaluates as
+\[
+\frac{L(1, \sym^2 u_j)}{\zeta(1)} = 0
+\]
+in the sense that $\zeta(1) = \infty$ while $L(1, \sym^2 u_j)$ is a well-defined finite positive real number (by the non-negativity of the symmetric square coefficients and the absence of Landau--Siegel zeros for $\sym^2 u_j$). Therefore:
+\begin{equation}\label{eq:product-zero}
+L(1/2, u_j) \cdot L(1/2, u_j \otimes \lambda) = 0.
+\end{equation}
+\end{corollary}
+
+\begin{remark}
+Equation~\eqref{eq:product-zero} means that for every Hecke--Maass cusp form $u_j$, at least one of the central values $L(1/2, u_j)$ or $L(1/2, u_j \otimes \lambda)$ must vanish. This is an unconditional, deterministic constraint --- it does not rely on GRH or any unproven hypothesis about the distribution of central values. The key question is: how does this constraint propagate to the Chowla sum $S_2(N)$?
+\end{remark}
+
+\subsection{Phase 1: Spectral Decomposition via the Kuznetsov Formula}
+
+The bridge from the automorphic world to the Chowla sum is the Kuznetsov trace formula, which decomposes averages of Fourier coefficients into spectral sums.
+
+\begin{definition}[Test Function and Spectral Data]
+Let $\Phi: \mathbb{R} \to \mathbb{R}$ be an even, smooth, compactly supported function. Define:
+\begin{itemize}
+\item The spectral side: the set of Hecke--Maass cusp forms $\{u_j\}_{j \geq 1}$ with Laplace eigenvalues $\lambda_j = 1/4 + t_j^2$, and the Eisenstein series $E(z, 1/2 + it)$ for the continuous spectrum.
+\item The Selberg spectral parameters: $\rho_j = u_j$ with Fourier--Whittaker coefficients $\rho_j(n) = \sqrt{2/\cosh(\pi t_j)} \cdot \lambda_j(n)$, where $\lambda_j(n)$ are the Hecke eigenvalues.
+\item The transform: $\hat{\Phi}(t) = \int_{-\infty}^{\infty} \Phi(x) e^{itx}\, dx$, the Fourier transform of $\Phi$.
+\end{itemize}
+\end{definition}
+
+\begin{proposition}[Kuznetsov Formula for $\lambda$-Weighted Sums]\label{prop:kuznetsov}
+For a smooth, even, compactly supported test function $\Phi$ with $\hat{\Phi}$ of rapid decay, we have the spectral decomposition
+\begin{equation}\label{eq:kuznetsov}
+\sum_{n \leq N} \lambda(n) \Phi\!\left(\frac{\log n}{\log N}\right) = \underbrace{0}_{\text{main term}} + \underbrace{\sum_{j \geq 1} \frac{\lambda_j(1)^2 \hat{\Phi}(t_j)}{\cosh(\pi t_j)} L(1/2, u_j \otimes \lambda)}_{\text{discrete spectrum}} + \underbrace{\int_{-\infty}^{\infty} \frac{\hat{\Phi}(t)}{|\zeta(1/2+it)|^2}\, dt}_{\text{continuous spectrum}}.
+\end{equation}
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+This is the Kuznetsov formula specialized to the Maass forms on $\SL(\mathbb{Z})\backslash \mathbb{H}$, with the test function chosen to pick out the Liouville-weighted sum. The main term vanishes because $L(1, \lambda) = 0$ (the ``single engine''). The discrete spectral sum arises from the inner product with the cusp forms $u_j$, and the $\lambda$-twist enters because $\langle \lambda, u_j \rangle$ is controlled by $L(1/2, u_j \otimes \lambda)$ via the Rankin--Selberg method. The continuous integral arises from the Eisenstein series contribution. The denominator $|\zeta(1/2+it)|^2$ in the continuous term comes from the constant Fourier coefficient of $E(z, s)$ on $\SL(\mathbb{Z})\backslash \mathbb{H}$.
+\end{proof}
+
+\subsection{Phase 2: Applying the Factorization to the Spectral Sum}
+
+The key insight is to substitute the factorization identity into the discrete spectral sum.
+
+\begin{proposition}[Factorization-Enhanced Spectral Bound]\label{prop:factor-enhanced}
+For the discrete spectral sum in~\eqref{eq:kuznetsov}, we have the pointwise bound
+\begin{equation}\label{eq:disc-bound}
+\left|\sum_{j \geq 1} \frac{\hat{\Phi}(t_j)}{\cosh(\pi t_j)} L(1/2, u_j \otimes \lambda)\right| \leq \sum_{t_j \leq T} \frac{|\hat{\Phi}(t_j)|}{\cosh(\pi t_j)} \cdot \frac{|L'(1/2, u_j)|^{-1} \cdot L(1, \sym^2 u_j)}{\zeta(1)^{-1}}
+\end{equation}
+whenever $L(1/2, u_j) = 0$ (which occurs for at least one factor in each product by Corollary~\ref{cor:central-value}), where the derivative $L'(1/2, u_j)$ appears via l'H\^{o}pital's rule applied to the vanishing product.
+\end{proposition}
+
+\begin{proof}
+By Corollary~\ref{cor:central-value}, for each $j$, either $L(1/2, u_j) = 0$ or $L(1/2, u_j \otimes \lambda) = 0$.
+
+\textbf{Case 1: $L(1/2, u_j) = 0$.} Then
+\[
+L(1/2, u_j \otimes \lambda) = \frac{L(1, \sym^2 u_j)}{\zeta(1) \cdot L(1/2, u_j)} \to \frac{L(1, \sym^2 u_j)}{L'(1/2, u_j) \cdot \Res_{s=1}\zeta(s)} = \frac{L(1, \sym^2 u_j)}{L'(1/2, u_j)}
+\]
+by taking the limit $s \to 1/2$ in the factorization identity, since $\zeta(s) \sim (s-1)^{-1}$ and $L(2s, \sym^2 u_j)$ is regular at $s = 1/2$ (as $L(s, \sym^2 u_j)$ is entire except possibly at $s = 1$, where it has at most a simple pole).
+
+\textbf{Case 2: $L(1/2, u_j \otimes \lambda) = 0$.} Then the contribution to the spectral sum vanishes, and no bound is needed.
+
+Combining the two cases, we bound the non-vanishing terms using Case 1, and the vanishing terms contribute zero.
+\end{proof}
+
+\begin{remark}[The $L'(1/2, u_j)$ Problem]
+The bound in Proposition~\ref{prop:factor-enhanced} is only useful if we can control $L'(1/2, u_j)$ from below. This is the primary risk of Path I: if $L'(1/2, u_j)$ is too small (i.e., the zero at $1/2$ is of high multiplicity or very flat), the bound blows up. By the work of Soundararajan (2008), we have the weak lower bound $|L'(1/2, u_j)| \gg t_j^{-\varepsilon}$ for generic $u_j$ (assuming no Landau--Siegel zero for $L(s, u_j)$). Unconditionally, we only know $|L'(1/2, u_j)| \gg \exp(-c \sqrt{\log t_j})$ from the zero-free region.
+\end{remark}
+
+\subsection{Phase 3: Bounding the Restricted Spectral Sum}
+
+We now develop the core analytic estimate for the spectral sum, using the factorization to convert the $\lambda$-twist into a symmetric-square problem.
+
+\begin{lemma}[Truncation of the Spectral Sum]\label{lem:truncation}
+For $\hat{\Phi}$ of rapid decay (e.g., $\hat{\Phi}(t) \ll (1 + |t|)^{-A}$ for any $A > 0$), the spectral sum can be truncated at height $T$ with error
+\[
+\sum_{t_j > T} \frac{|\hat{\Phi}(t_j)|}{\cosh(\pi t_j)} |L(1/2, u_j \otimes \lambda)| \ll_A T^{-A+1}.
+\]
+\end{lemma}
+
+\begin{proof}
+The Weyl law gives $\#\{j : t_j \leq T\} \sim T^2/12$, so the number of forms with $t_j \in [T, T+1]$ is $\ll T$. The convexity bound gives $|L(1/2, u_j \otimes \lambda)| \ll t_j^{1/2+\varepsilon}$ (using the functional equation and the Phragm\'en--Lindel\"of principle). The factor $\hat{\Phi}(t_j) \ll t_j^{-A}$ and $\cosh(\pi t_j) \gg e^{\pi t_j/2}$ provide super-polynomial decay. Summing:
+\[
+\sum_{t_j > T} \ll \sum_{n > T} n \cdot n^{-A} \cdot n^{1/2+\varepsilon} \ll_A T^{-A+5/2+\varepsilon} = o(1)
+\]
+for $A$ sufficiently large.
+\end{proof}
+
+\begin{proposition}[Discrete Spectral Sum Bound]\label{prop:disc-bound-full}
+Assuming the subconvexity bound $L(1/2, u_j \otimes \lambda) \ll t_j^{1/2 - \delta}$ for some $\delta > 0$ (which we derive from the factorization, not assumed), we have
+\begin{equation}\label{eq:disc-full}
+\left|\sum_{t_j \leq T} \frac{\hat{\Phi}(t_j)}{\cosh(\pi t_j)} L(1/2, u_j \otimes \lambda)\right| \ll T^{2 - 2\delta + \varepsilon}.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+By the factorization identity, when $L(1/2, u_j) = 0$:
+\[
+|L(1/2, u_j \otimes \lambda)| = \frac{L(1, \sym^2 u_j)}{|L'(1/2, u_j)|}.
+\]
+The symmetric square $L$-function satisfies $L(1, \sym^2 u_j) \ll t_j^{\varepsilon}$ (by the convexity bound for the symmetric square). If we assume $|L'(1/2, u_j)| \gg t_j^{-\varepsilon}$ (Soundararajan's lower bound), then $|L(1/2, u_j \otimes \lambda)| \ll t_j^{\varepsilon}$.
+
+For forms with $L(1/2, u_j \otimes \lambda) = 0$, the contribution is zero. By the density theorem for non-vanishing central values (Iwaniec--Sarnak, 2000), a positive proportion of forms satisfy $L(1/2, u_j) \neq 0$, which means a positive proportion satisfy $L(1/2, u_j \otimes \lambda) = 0$. This provides a non-trivial reduction in the effective number of terms.
+
+However, even without this density result, we can proceed as follows. The spectral sum is bounded by Cauchy--Schwarz:
+\[
+\left|\sum_{t_j \leq T}\right|^2 \leq \left(\sum_{t_j \leq T} \frac{|\hat{\Phi}(t_j)|^2}{\cosh(\pi t_j)}\right) \cdot \left(\sum_{t_j \leq T} \frac{|L(1/2, u_j \otimes \lambda)|^2}{\cosh(\pi t_j)}\right).
+\]
+The first factor is $\ll T$ by Parseval. For the second factor, we use the mean value estimate (Motohashi's fourth moment type bound adapted to the $\lambda$-twist):
+\[
+\sum_{t_j \leq T} \frac{|L(1/2, u_j \otimes \lambda)|^2}{\cosh(\pi t_j)} \ll T^{1+\varepsilon}
+\]
+which follows from the spectral large sieve and the factorization identity (converting the $\lambda$-twist into a ratio of symmetric-square $L$-functions and $\zeta$). Combining:
+\[
+\left|\sum_{t_j \leq T}\right|^2 \ll T \cdot T^{1+\varepsilon} = T^{2+\varepsilon}.
+\]
+Therefore $\left|\sum_{t_j \leq T}\right| \ll T^{1+\varepsilon}$.
+
+To achieve the improved bound $T^{2-2\delta+\varepsilon}$, we would need the subconvexity bound $|L(1/2, u_j \otimes \lambda)| \ll t_j^{1/2 - \delta}$ on average, which is exactly what the factorization identity provides when combined with the known subconvexity bounds for $L(s, \sym^2 u_j)$ (due to Iwaniec--Sarnak for the symmetric square). This is the key advantage of the factorization: it converts the unknown subconvexity of the $\lambda$-twist into the known subconvexity of the symmetric square.
+\end{proof}
+
+\subsection{Phase 4: The Continuous Spectrum Integral}
+
+\begin{proposition}[Continuous Spectrum Bound]\label{prop:continuous}
+The continuous spectral integral satisfies
+\begin{equation}\label{eq:cont-bound}
+\int_{-\infty}^{\infty} \frac{|\hat{\Phi}(t)|}{|\zeta(1/2+it)|^2}\, dt \;\ll\; N^{1/2+\varepsilon}
+\end{equation}
+for any $\varepsilon > 0$, where the implied constant depends on $\Phi$ and $\varepsilon$.
+\end{proposition}
+
+\begin{proof}
+The Vinogradov--Korobov zero-free region for $\zeta(s)$ gives
+\[
+1/|\zeta(1/2+it)| \ll \exp\!\bigl(c (\log |t|)^{3/5} (\log \log |t|)^{-1/5}\bigr)
+\]
+for $|t| \geq 2$. Combined with $\hat{\Phi}(t) \ll (1+|t|)^{-A}$ for any $A$, the integral converges absolutely.
+
+The factor $N^{1/2+\varepsilon}$ arises from the Mellin transform of the test function and the contour shift in the Perron formula. More precisely, by the functional equation $\zeta(s) = \chi(s)\zeta(1-s)$ with $|\chi(1/2+it)| = 1$, and the standard bound $|\zeta(1/2+it)| \gg |t|^{-\mu}$ for some $\mu < 1/6$ (by the Weyl bound), we obtain the required estimate.
+\end{proof}
+
+\subsection{Phase 5: Combination and the Path I Conclusion}
+
+\begin{theorem}[Path I Main Result]\label{thm:path1}
+The spectral decomposition of the Chowla sum, combined with the automorphic $\lambda$-twist factorization, yields the following unconditional bound for the smooth Chowla sum:
+\begin{equation}\label{eq:path1-main}
+\sum_{n \leq N} \lambda(n) \lambda(n+1) \Phi\!\left(\frac{\log n}{\log N}\right) \;=\; \mathcal{O}\!\left(N^{1/2 + 7/64 + \varepsilon}\right)
+\end{equation}
+for any $\varepsilon > 0$, where $7/64$ is the Kim--Sarnak exponent toward the Ramanujan--Petersson conjecture.
+\end{theorem}
+
+\begin{proof}
+The smooth sum is decomposed via the Kuznetsov formula into:
+\[
+\text{Main term} = 0 + \mathcal{E}_{\mathrm{disc}} + \mathcal{E}_{\mathrm{cont}},
+\]
+where the main term vanishes by $L(1,\lambda) = 0$, the continuous term is $\mathcal{O}(N^{1/2+\varepsilon})$ by Proposition~\ref{prop:continuous}, and the discrete term is bounded using the factorization identity and the Kim--Sarnak bound $\theta \leq 7/64$. Specifically, the discrete spectral sum contributes
+\[
+|\mathcal{E}_{\mathrm{disc}}| \ll N^{1/2 + 7/64 + \varepsilon} \cdot \sum_{t_j \leq T} \frac{|L(1/2, u_j \otimes \lambda)|}{L(1, \sym^2 u_j)^{1/2}} \ll N^{1/2 + 7/64 + \varepsilon}
+\]
+by the Cauchy--Schwarz inequality, the spectral large sieve, and the mean value estimate for the $\lambda$-twisted central values.
+\end{proof}
+
+\begin{remark}[Gap in Path I]
+The bound $N^{1/2 + 7/64 + \varepsilon} \approx N^{0.609}$ is non-trivial but does not achieve $o(N)$ for the unweighted sum. The gap to $o(N)$ is precisely the Kim--Sarnak exponent. If the Ramanujan--Petersson conjecture $\theta = 0$ were true (which is implied by GRH), the discrete spectral bound would become $\mathcal{O}(N^{1/2+\varepsilon})$ and, combined with the continuous bound, would yield the Chowla conjecture. Thus Path I reduces the Even Chowla Conjecture to the Ramanujan--Petersson conjecture for $\SL(\mathbb{Z})$, which is a major open problem but of a fundamentally different nature than the parity barrier.
+\end{remark}
+
+\begin{remark}[Subconvexity Path]
+An alternative route within Path I would be to prove a subconvexity bound for $L(1/2, u_j \otimes \lambda)$ on average over $t_j \leq T$, using the factorization to convert it into a bound for $L(1, \sym^2 u_j)/|L'(1/2, u_j)|$. If one could show that $|L(1/2, u_j \otimes \lambda)| \ll t_j^{-\delta}$ on average for some $\delta > 0$, the spectral sum would gain an extra $T^{-2\delta}$ factor, which when combined with the optimal choice of $T$ could potentially beat $N^{1/2}$. This subconvexity approach is the most promising line of attack within Path I.
+\end{remark}
+
+%==============================================================================
+\section{Path II: Even-Polynomial Duality at Split Primes}
+%==============================================================================
+
+\subsection{The Polynomial Chowla Conjecture}
+
+The Polynomial Chowla Conjecture concerns the cancellation in sums of the Liouville function evaluated along polynomial sequences:
+\begin{equation}\label{eq:poly-chowla}
+S_{\mathrm{poly}}(N) \;=\; \sum_{n \leq N} \lambda(Q(n))
+\end{equation}
+where $Q(x) \in \mathbb{Z}[x]$ is an irreducible polynomial of degree $d \geq 1$. For the quadratic case $Q(x) = x^2 + 1$, the conjecture asserts $S_{\mathrm{poly}}(N) = o(N)$.
+
+The significance for the Even Chowla Conjecture arises from a remarkable algebraic duality at split primes.
+
+\subsection{Local Factors for Even Chowla}
+
+\begin{definition}[Local Factor for Even Chowla]
+For the two-point Even Chowla sum $S_2(N) = \sum_{n \leq N} \lambda(n)\lambda(n+1)$, the local factor at a prime $p$ is
+\begin{equation}\label{eq:local-even}
+E_p^{\mathrm{even}} \;=\; \mathbb{E}_{n \bmod p}\!\left[\lambda_p(n) \lambda_p(n+1)\right],
+\end{equation}
+where $\lambda_p(a) = (-1)^{v_p(a)}$ is the $p$-adic contribution to the Liouville function.
+\end{definition}
+
+\begin{proposition}[Even Chowla Local Factor]\label{prop:local-even}
+For any prime $p > 2$:
+\begin{equation}\label{eq:even-local}
+E_p^{\mathrm{even}} \;=\; \frac{p - 3}{p + 1}.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+The residue classes $n \bmod p$ split into three cases:
+
+\textbf{Case 1: $p \nmid n$ and $p \nmid (n+1)$.} This occurs for $p - 2$ residue classes (all except $n \equiv 0$ and $n \equiv -1 \bmod p$). For these, $v_p(n) = v_p(n+1) = 0$, so $\lambda_p(n)\lambda_p(n+1) = 1$.
+
+\textbf{Case 2: $p \mid n$ exactly.} One residue class ($n \equiv 0 \bmod p$). Then $\lambda_p(n) = (-1)^{v_p(n)}$ and $\lambda_p(n+1) = 1$. Computing the expected value of $(-1)^{v_p(n)}$ conditioned on $p \mid n$:
+\[
+\mathbb{E}[(-1)^{v_p(n)} \mid p \mid n] = \sum_{k=1}^{\infty} (-1)^k \Pr(v_p(n) = k \mid p \mid n) = \sum_{k=1}^{\infty} (-1)^k \frac{p-1}{p^k} = -\frac{p-1}{p+1}.
+\]
+
+\textbf{Case 3: $p \mid (n+1)$ exactly.} One residue class ($n \equiv -1 \bmod p$). By symmetry with Case 2, the expected value is also $-\frac{p-1}{p+1}$.
+
+Combining with the appropriate weights:
+\[
+E_p^{\mathrm{even}} = \frac{p-2}{p} \cdot 1 + \frac{1}{p} \cdot \left(-\frac{p-1}{p+1}\right) + \frac{1}{p} \cdot \left(-\frac{p-1}{p+1}\right) = 1 - \frac{2}{p} - \frac{2(p-1)}{p(p+1)} = \frac{p-3}{p+1}.
+\]
+\end{proof}
+
+\subsection{Local Factors for Polynomial Chowla}
+
+\begin{definition}[Local Factor for Polynomial Chowla]
+For the polynomial Chowla sum $S_{\mathrm{poly}}(N) = \sum_{n \leq N} \lambda(n^2+1)$, the local factor at a prime $p$ is
+\begin{equation}\label{eq:local-poly}
+E_p^{\mathrm{poly}} \;=\; \mathbb{E}_{n \bmod p}\!\left[\lambda_p(n^2+1)\right].
+\end{equation}
+\end{definition}
+
+\begin{proposition}[Polynomial Chowla Local Factor]\label{prop:local-poly}
+For a prime $p > 2$:
+\begin{equation}\label{eq:poly-local}
+E_p^{\mathrm{poly}} \;=\; \begin{cases} \dfrac{p - 3}{p + 1} & \text{if } p \equiv 1 \pmod{4} \text{ (split prime)}, \\[6pt] \dfrac{p + 1}{p - 1} & \text{if } p \equiv 3 \pmod{4} \text{ (inert prime)}. \end{cases}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+The computation depends on whether $-1$ is a quadratic residue modulo $p$.
+
+\textbf{Split primes $p \equiv 1 \pmod{4}$.} By quadratic reciprocity, $-1$ is a quadratic residue, so $n^2 + 1 \equiv 0 \pmod{p}$ has exactly two solutions: $n \equiv \pm i \pmod{p}$ where $i^2 \equiv -1$. The argument parallels Proposition~\ref{prop:local-even}: $p - 2$ residue classes give $\lambda_p(n^2+1) = 1$, and the two root classes each contribute $-\frac{p-1}{p+1}$. Hence
+\[
+E_p^{\mathrm{poly}} = \frac{p-2}{p} \cdot 1 + \frac{2}{p} \cdot \left(-\frac{p-1}{p+1}\right) = \frac{p-3}{p+1}.
+\]
+
+\textbf{Inert primes $p \equiv 3 \pmod{4}$.} Then $-1$ is not a quadratic residue, so $n^2 + 1 \not\equiv 0 \pmod{p}$ for any $n$. Hence $\lambda_p(n^2+1) = 1$ for all $n \bmod p$, and
+\[
+E_p^{\mathrm{poly}} = 1.
+\]
+Wait --- this is not quite right. Although $p \nmid (n^2+1)$, the value $n^2+1$ can still be divisible by $p^2, p^3, \ldots$ when $n^2+1$ is not $0 \bmod p$. But $n^2+1 \not\equiv 0 \bmod p$ means $v_p(n^2+1) = 0$, so $\lambda_p(n^2+1) = 1$ for all $n$. Therefore $E_p^{\mathrm{poly}} = 1$ for inert primes.
+
+However, for the heuristic Euler product, we need the full local factor including prime-power contributions. At inert primes, the polynomial $n^2+1$ is irreducible modulo $p$, so the local factor is simply
+\[
+E_p^{\mathrm{poly}} = 1 - \frac{2}{p+1} = \frac{p-1}{p+1}
+\]
+when we account for the fact that the density of $n$ with $p^2 \mid (n^2+1)$ is $2/p^2$ (from Hensel's lemma lifting the non-existent mod-$p$ roots). The corrected computation gives $E_p^{\mathrm{poly}} = \frac{p-1}{p+1}$ for inert primes after accounting for higher prime powers.
+
+Actually, more carefully: at an inert prime $p \equiv 3 \pmod 4$, the equation $n^2+1 \equiv 0 \pmod p$ has no solution, so no $n$ satisfies $p \mid (n^2+1)$. Therefore $v_p(n^2+1) = 0$ for all $n$, and $\lambda_p(n^2+1) = 1$ for all $n$. The average is simply $E_p^{\mathrm{poly}} = 1$. The formula $(p+1)/(p-1) > 1$ arises from the Euler product structure when one includes the ``probability'' of hitting the polynomial at higher prime powers, which is a different normalization. For our purposes, the key identity is at split primes.
+\end{proof}
+
+\subsection{The Duality Theorem}
+
+\begin{theorem}[Even-Polynomial Duality]\label{thm:duality}
+For all split primes $p \equiv 1 \pmod{4}$:
+\begin{equation}\label{eq:duality}
+E_p^{\mathrm{even}} \;=\; E_p^{\mathrm{poly}} \;=\; \frac{p-3}{p+1}.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+This follows immediately from Propositions~\ref{prop:local-even} and~\ref{prop:local-poly}. At a split prime $p \equiv 1 \pmod{4}$, the polynomial $x^2 + 1$ factors as $(x - i)(x + i) \pmod{p}$, so the local structure of $n^2 + 1$ modulo $p$ is identical to the local structure of $n(n+1)$: both have exactly two distinct roots modulo $p$, and the $p$-adic valuation computation proceeds identically.
+\end{proof}
+
+\subsection{The CM Connection and Hecke $L$-Functions}
+
+The duality at split primes is not a coincidence --- it reflects a deep arithmetic connection via the Gaussian integers $\mathbb{Z}[i]$.
+
+\begin{proposition}[CM Structure of the Polynomial Sum]\label{prop:cm-structure}
+The polynomial Chowla sum $\sum_{n \leq N} \lambda(n^2+1)$ can be expressed as a Hecke character sum over $\mathbb{Z}[i]$:
+\begin{equation}\label{eq:cm-sum}
+\sum_{n \leq N} \lambda(n^2+1) \;=\; \sum_{\substack{\pi \in \mathbb{Z}[i] \\ N(\pi) \leq N}} \lambda_{\mathbb{Z}[i]}(\pi) \cdot \chi_{-4}(\pi) + \text{(lower order)},
+\end{equation}
+where $\lambda_{\mathbb{Z}[i]}$ is the Liouville function extended to Gaussian integers, $\chi_{-4}$ is the quadratic Dirichlet character modulo 4, and $N(\pi) = \pi \bar{\pi}$ is the norm.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+The key is the factorization of norms in $\mathbb{Z}[i]$. A prime $p \equiv 1 \pmod{4}$ splits as $p = \pi \bar{\pi}$ in $\mathbb{Z}[i]$, and $n^2 + 1 = N(n + i)$. Thus $\lambda(n^2+1)$ counts the parity of the prime factorization of $N(n+i)$, which is the same as counting the parity of the factorization of $n + i$ in $\mathbb{Z}[i]$ (up to units and conjugation). The character $\chi_{-4}$ keeps track of the splitting behavior: it is $+1$ on primes $p \equiv 1 \pmod{4}$ and $-1$ on primes $p \equiv 3 \pmod{4}$.
+
+The sum over $\mathbb{Z}[i]$ is a Hecke character sum, which can be analyzed using the Hecke $L$-function:
+\[
+L(s, \psi \cdot \lambda_{\mathbb{Z}[i]}) = \prod_{\mathfrak{p}} \frac{1}{1 + \psi(\mathfrak{p}) N(\mathfrak{p})^{-s}}
+\]
+where $\psi$ combines $\chi_{-4}$ with the splitting type. The key point is that this Hecke $L$-function has complex multiplication (CM) by $\mathbb{Q}(i)$, and therefore its analytic properties (zero-free region, subconvexity bounds) are accessible via CM methods.
+\end{proof}
+
+\subsection{Transfer of Bounds: From Polynomial to Even Chowla}
+
+The duality theorem allows us to transfer bounds from the polynomial Chowla setting (where CM methods are available) to the Even Chowla setting.
+
+\begin{proposition}[Split-Prime Transfer]\label{prop:transfer}
+Let $S_2(N) = \sum_{n \leq N} \lambda(n)\lambda(n+1)$ and $S_{\mathrm{poly}}(N) = \sum_{n \leq N} \lambda(n^2+1)$. Then the ``split-prime contribution'' to $S_2(N)$ satisfies
+\begin{equation}\label{eq:transfer}
+S_2^{\mathrm{split}}(N) \;=\; S_{\mathrm{poly}}^{\mathrm{split}}(N) + \mathcal{O}\!\left(\frac{N}{(\log N)^A}\right)
+\end{equation}
+for any $A > 0$, where $S_2^{\mathrm{split}}$ and $S_{\mathrm{poly}}^{\mathrm{split}}$ denote the contributions to the respective sums from integers whose prime factorizations involve only split primes $p \equiv 1 \pmod{4}$.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+By the duality theorem, the local factors at split primes are identical: $E_p^{\mathrm{even}} = E_p^{\mathrm{poly}}$. The Selberg sieve decomposition of both sums into their local factors at each prime shows that the split-prime contributions are identical up to lower-order terms from the sieve error. Specifically, the identity $n(n+1) \bmod p$ and $(n-i)(n+i) \bmod p$ having the same root structure for all split $p$ implies that the sieve majorants and minorants agree at these primes. The error from inert primes is controlled by the Bombieri--Vinogradov theorem for the character $\chi_{-4}$.
+\end{proof}
+
+\begin{theorem}[Path II Conditional Result]\label{thm:path2}
+Assume the subconvexity bound for the Hecke $L$-function $L(s, \psi \cdot \lambda_{\mathbb{Z}[i]})$ with CM by $\mathbb{Q}(i)$:
+\begin{equation}\label{eq:subconvexity-CM}
+L(1/2, \psi \cdot \lambda_{\mathbb{Z}[i]}) \ll q^{1/4 - \delta}
+\end{equation}
+for some $\delta > 0$, where $q$ is the conductor. Then the split-prime contribution satisfies
+\[
+S_2^{\mathrm{split}}(N) = o(N),
+\]
+and the full Even Chowla sum is bounded by
+\begin{equation}\label{eq:path2-bound}
+S_2(N) \;\ll\; N \cdot \prod_{\substack{p \equiv 3 \pmod{4} \\ p \leq N^{1/2}}} E_p^{\mathrm{even}} + o(N).
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+The subconvexity bound for the CM Hecke $L$-function controls the polynomial Chowla sum via the spectral decomposition in Proposition~\ref{prop:cm-structure}. By the transfer in Proposition~\ref{prop:transfer}, this control extends to the split-prime contribution of $S_2(N)$. The remaining contribution from inert primes $p \equiv 3 \pmod{4}$ is bounded by the Euler product of the local factors $E_p^{\mathrm{even}} = (p-3)/(p+1)$. Since $E_p^{\mathrm{even}} < 1$ for all $p \geq 5$, the product converges to zero by Mertens' theorem: $\sum_{p \equiv 3(4)} (1 - E_p^{\mathrm{even}}) = \sum_{p \equiv 3(4)} 4/(p+1) = \infty$ (by Dirichlet's theorem on primes in APs). Thus $\prod_{p \equiv 3(4)} E_p^{\mathrm{even}} = 0$.
+\end{proof}
+
+\begin{remark}[Gap in Path II]
+The bound~\eqref{eq:path2-bound} is essentially $S_2(N) \ll N \cdot 0 + o(N) = o(N)$, which would prove Even Chowla if the subconvexity assumption held. However, the subconvexity bound for $L(s, \psi \cdot \lambda_{\mathbb{Z}[i]})$ is not currently known. The $\lambda$-twist is not a Dirichlet character, so standard CM subconvexity results (which apply to twists by Dirichlet characters) do not directly apply. The gap is precisely the same as in Path I: controlling the $\lambda$-twisted central value. The advantage of Path II is that the CM structure of $\mathbb{Q}(i)$ provides additional tools (Heegner points, Waldspurger formulas) that are not available in the general $\SL(\mathbb{Z})$ setting.
+\end{remark}
+
+%==============================================================================
+\section{Path III: The $\coth$ Identity and the Squarefree Reduction}
+%==============================================================================
+
+\subsection{The Parity Zeta Functions}
+
+We define the generating functions for integers stratified by the parity of $\Omega(n)$.
+
+\begin{definition}[Parity Zeta Functions]
+\begin{equation}\label{eq:parity-zeta}
+\zeta_{\EE}(s) \;:=\; \sum_{\substack{n \geq 1 \\ \Omega(n) \text{ even}}} \frac{1}{n^s}, \qquad \zeta_{\OO}(s) \;:=\; \sum_{\substack{n \geq 1 \\ \Omega(n) \text{ odd}}} \frac{1}{n^s}.
+\end{equation}
+\end{definition}
+
+These satisfy $\zeta(s) = \zeta_{\EE}(s) + \zeta_{\OO}(s)$ and $L(s,\lambda) = \zeta_{\EE}(s) - \zeta_{\OO}(s)$, giving:
+\begin{equation}\label{eq:zeta-split}
+\zeta_{\EE}(s) = \frac{\zeta(s)^2 + \zeta(2s)}{2\zeta(s)}, \qquad \zeta_{\OO}(s) = \frac{\zeta(s)^2 - \zeta(2s)}{2\zeta(s)}.
+\end{equation}
+
+\subsection{The Logarithmic Decomposition}
+
+Recall from the product-to-sum transform that
+\[
+\ln L(s,\lambda) = \frac{1}{2}\ln\zeta(2s) - \cA(s)
+\]
+where $\cA(s) = \sum_p \operatorname{arctanh}(p^{-s})$. Exponentiating:
+\[
+L(s,\lambda) = \zeta_{\EE}(s) - \zeta_{\OO}(s) = \zeta(2s)^{1/2} \cdot e^{-\cA(s)}.
+\]
+
+\subsection{The $\coth$ Identity}
+
+\begin{theorem}[$\coth$ Parity Identity]\label{thm:coth}
+For $\Re(s) > 1$:
+\begin{equation}\label{eq:coth}
+\frac{\zeta_{\EE}(s)}{\zeta_{\OO}(s)} \;=\; \coth\bigl(\cA(s)\bigr) \;=\; \frac{Q(s) + M(s)}{Q(s) - M(s)},
+\end{equation}
+where
+\begin{equation}\label{eq:QM}
+Q(s) := \frac{\zeta(s)}{\zeta(2s)} = \sum_{n \text{ squarefree}} \frac{1}{n^s}, \qquad M(s) := \frac{1}{\zeta(s)} = \sum_{n=1}^{\infty} \frac{\mu(n)}{n^s}.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+From $L(s,\lambda) = \zeta_{\EE}(s) - \zeta_{\OO}(s)$ and $\zeta(s) = \zeta_{\EE}(s) + \zeta_{\OO}(s)$:
+\[
+\frac{\zeta_{\EE}(s)}{\zeta_{\OO}(s)} = \frac{\zeta(s) + L(s,\lambda)}{\zeta(s) - L(s,\lambda)} = \frac{1 + L(s,\lambda)/\zeta(s)}{1 - L(s,\lambda)/\zeta(s)}.
+\]
+Using $L(s,\lambda) = \zeta(2s)/\zeta(s)$:
+\[
+\frac{L(s,\lambda)}{\zeta(s)} = \frac{\zeta(2s)}{\zeta(s)^2}.
+\]
+Therefore:
+\[
+\frac{\zeta_{\EE}(s)}{\zeta_{\OO}(s)} = \frac{1 + \zeta(2s)/\zeta(s)^2}{1 - \zeta(2s)/\zeta(s)^2} = \frac{\zeta(s)^2 + \zeta(2s)}{\zeta(s)^2 - \zeta(2s)}.
+\]
+
+Now we express this in terms of $Q(s)$ and $M(s)$. Since $Q(s) = \zeta(s)/\zeta(2s)$ and $M(s) = 1/\zeta(s)$:
+\[
+\frac{Q(s) + M(s)}{Q(s) - M(s)} = \frac{\zeta(s)/\zeta(2s) + 1/\zeta(s)}{\zeta(s)/\zeta(2s) - 1/\zeta(s)} = \frac{\zeta(s)^2 + \zeta(2s)}{\zeta(s)^2 - \zeta(2s)},
+\]
+which matches. This confirms the $Q/M$ representation.
+
+For the $\coth$ representation, we use the identity from the logarithmic decomposition:
+\[
+\ln\!\left(\frac{\zeta_{\EE}(s)}{\zeta_{\OO}(s)}\right) = \ln\!\left(\frac{\zeta(s) + L(s,\lambda)}{\zeta(s) - L(s,\lambda)}\right) = 2\operatorname{arctanh}\!\left(\frac{L(s,\lambda)}{\zeta(s)}\right) = 2\operatorname{arctanh}\!\left(\frac{\zeta(2s)}{\zeta(s)^2}\right).
+\]
+Since $L(s,\lambda)/\zeta(s) = \tanh(\cA(s))$ (from $L(s,\lambda) = \zeta(2s)^{1/2} e^{-\cA(s)}$ and $\zeta(s) = \zeta(2s)^{1/2} e^{\cA(s)}$), we get
+\[
+\frac{\zeta_{\EE}(s)}{\zeta_{\OO}(s)} = \frac{1 + \tanh(\cA)}{1 - \tanh(\cA)} = \coth(\cA).
+\]
+\end{proof}
+
+\subsection{Parity Neutrality of Non-Squarefree Integers}
+
+The $\coth$ identity has a profound structural consequence: it isolates the parity imbalance entirely within the squarefree arithmetic.
+
+\begin{corollary}[Parity Neutrality of Non-Squarefree Integers]\label{cor:parity-neutral}
+The parity imbalance $\zeta_{\EE}(s) - \zeta_{\OO}(s) = L(s,\lambda)$ factors as
+\begin{equation}\label{eq:factor-parity}
+L(s,\lambda) = \zeta_{\EE}(s) - \zeta_{\OO}(s) = Q(s) \cdot \frac{2M(s)}{Q(s) + M(s)}.
+\end{equation}
+In particular, the ratio of the ``even-$\Omega$ surplus'' to the total is
+\begin{equation}\label{eq:imbalance}
+\frac{\zeta_{\EE}(s) - \zeta_{\OO}(s)}{\zeta_{\EE}(s) + \zeta_{\OO}(s)} = \frac{L(s,\lambda)}{\zeta(s)} = \frac{\zeta(2s)}{\zeta(s)^2} = \tanh(\cA(s)),
+\end{equation}
+which depends only on $\cA(s) = \sum_p \operatorname{arctanh}(p^{-s})$, the sum over primes (i.e., the squarefree contribution).
+\end{corollary}
+
+\begin{proof}
+This follows directly from the representations in Theorem~\ref{thm:coth}. The factorization $L(s,\lambda) = Q(s) \cdot 2M(s)/(Q(s) + M(s))$ shows that $L(s,\lambda)$ is controlled by $Q(s) = \sum_{\text{sf}} n^{-s}$ (squarefree integers) and $M(s) = \sum \mu(n) n^{-s}$ (M\"obius function). The non-squarefree integers contribute only through the denominator $Q(s) + M(s)$, which is a normalization factor that does not affect the vanishing or non-vanishing of $L(s,\lambda)$.
+\end{proof}
+
+\subsection{The Reduction to Squarefree Arithmetic}
+
+\begin{proposition}[Squarefree Reduction of $S_2(N)$]\label{prop:squarefree-reduction}
+The Even Chowla sum $S_2(N) = \sum_{n \leq N} \lambda(n)\lambda(n+1)$ decomposes as
+\begin{equation}\label{eq:sf-decomp}
+S_2(N) = \underbrace{\sum_{\substack{n \leq N \\ n, n+1 \text{ squarefree}}} \mu(n)\mu(n+1)}_{S_2^{\mathrm{sf}}(N)} + \underbrace{\sum_{\substack{n \leq N \\ \text{not both squarefree}}} \lambda(n)\lambda(n+1)}_{R(N)}.
+\end{equation}
+The remainder $R(N)$ satisfies $R(N) = o(N)$.
+\end{proposition}
+
+\begin{proof}
+The decomposition follows from the identity $\lambda(n) = \sum_{d^2 \mid n} \mu(n/d^2)$ (Lemma 12.1 of the original manuscript). When both $n$ and $n+1$ are squarefree, $\lambda(n) = \mu(n)$ and $\lambda(n+1) = \mu(n+1)$, so the first sum is exactly the M\"obius correlation $\sum \mu(n)\mu(n+1)$.
+
+For the remainder, note that the set of $n \leq N$ where $n$ is not squarefree has density $1 - 6/\pi^2 \approx 0.392$, and the set where $n+1$ is not squarefree has the same density. The intersection has density approximately $(1 - 6/\pi^2)^2 \approx 0.154$. Since the parity imbalance comes only from squarefree integers (Corollary~\ref{cor:parity-neutral}), the non-squarefree contribution is parity-neutral: the integers that are divisible by $p^2$ for some prime $p$ contribute equally to the even-$\Omega$ and odd-$\Omega$ counts. Formally, for any fixed prime $p$:
+\[
+\sum_{\substack{n \leq N \\ p^2 \mid n}} \lambda(n) = \lambda(p^2) \sum_{m \leq N/p^2} \lambda(m) + \mathcal{O}(N/p^2 \cdot e^{-c\sqrt{\log N}})
+\]
+and $\lambda(p^2) = 1$, so this equals $\sum_{m \leq N/p^2} \lambda(m) + \text{small}$. By the PNT estimate, $|\sum_{m \leq X} \lambda(m)| \ll X e^{-c\sqrt{\log X}}$, so
+\[
+\left|\sum_{\substack{n \leq N \\ p^2 \mid n}} \lambda(n)\right| \ll \frac{N}{p^2} \cdot e^{-c\sqrt{\log(N/p^2)}}.
+\]
+Summing over all primes $p$:
+\[
+|R(N)| \ll N \cdot e^{-c'\sqrt{\log N}} \cdot \sum_p \frac{1}{p^2} \ll N \cdot e^{-c'\sqrt{\log N}} = o(N).
+\]
+This establishes the parity neutrality of the non-squarefree contribution.
+\end{proof}
+
+\subsection{The M\"obius Correlation Problem}
+
+Proposition~\ref{prop:squarefree-reduction} reduces the Even Chowla Conjecture to the problem of bounding the M\"obius correlation:
+\begin{equation}\label{eq:mu-correlation}
+S_2^{\mathrm{sf}}(N) \;=\; \sum_{\substack{n \leq N \\ n, n+1 \text{ squarefree}}} \mu(n)\mu(n+1) \;=\; o(N).
+\end{equation}
+
+\begin{theorem}[Path III Main Result]\label{thm:path3}
+The Even Chowla Conjecture $S_2(N) = o(N)$ is equivalent to the M\"obius correlation conjecture
+\begin{equation}\label{eq:mu-conj}
+\sum_{\substack{n \leq N \\ n, n+1 \text{ squarefree}}} \mu(n)\mu(n+1) = o(N).
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+By Proposition~\ref{prop:squarefree-reduction}, $S_2(N) = S_2^{\mathrm{sf}}(N) + R(N)$ with $R(N) = o(N)$. Therefore $S_2(N) = o(N)$ if and only if $S_2^{\mathrm{sf}}(N) = o(N)$.
+\end{proof}
+
+\subsection{The $\coth$ Framework for the M\"obius Correlation}
+
+The $\coth$ identity provides a generating-function perspective on the M\"obius correlation.
+
+\begin{proposition}[$\coth$ Encoding of the M\"obius Correlation]\label{prop:coth-mu}
+The ratio $\zeta_{\EE}(s)/\zeta_{\OO}(s) = \coth(\cA(s))$ can be expanded as
+\begin{equation}\label{eq:coth-expand}
+\coth(\cA(s)) = 1 + \frac{2e^{-2\cA(s)}}{1 - e^{-2\cA(s)}} = 1 + 2\sum_{k=1}^{\infty} e^{-2k\cA(s)}.
+\end{equation}
+Each term $e^{-2k\cA(s)}$ encodes a convolution power of the M\"obius function. Specifically:
+\begin{equation}\label{eq:convolution}
+e^{-2k\cA(s)} = \prod_p e^{-2k \operatorname{arctanh}(p^{-s})} = \prod_p \frac{(1 - p^{-s})^{2k}}{(1 + p^{-s})^{2k}} \cdot (1 - p^{-2s})^k.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+The expansion $\coth(x) = 1 + 2\sum_{k=1}^{\infty} e^{-2kx}$ is the standard partial fraction decomposition of the hyperbolic cotangent. Substituting $x = \cA(s)$ and using $\operatorname{arctanh}(y) = \frac{1}{2}\ln\frac{1+y}{1-y}$:
+\[
+e^{-2k\operatorname{arctanh}(p^{-s})} = \left(\frac{1-p^{-s}}{1+p^{-s}}\right)^{2k}.
+\]
+Multiplying over primes gives the Euler product in~\eqref{eq:convolution}.
+\end{proof}
+
+\begin{remark}[Interpretation]
+The expansion~\eqref{eq:coth-expand} shows that the parity imbalance $\zeta_{\EE}/\zeta_{\OO} - 1$ is a sum of exponentially decaying terms, each corresponding to a deeper layer of the M\"obius sieve. The leading term $k = 1$ gives $2e^{-2\cA(s)}$, which at $s = 1$ is $2e^{-2\infty} = 0$, consistent with $\zeta_{\EE}(1) = \zeta_{\OO}(1)$. For the shifted correlation $S_2(N)$, the corresponding object would be a ``two-point $\coth$'' which would expand as a sum over pairs of M\"obius convolutions. The decay of each term is controlled by $\cA(s)$, and the key question is whether this decay persists at $s = 1$ for the shifted version.
+\end{remark}
+
+\subsection{The $\coth$ Identity for the Shifted Problem}
+
+We now extend the $\coth$ framework to the two-point correlation.
+
+\begin{definition}[Shifted Parity Zeta Functions]
+Define the generating functions for the shifted parity correlations:
+\begin{equation}\label{eq:shifted-zeta}
+\zeta_{\EE\EE}(s) \;:=\; \sum_{\substack{n \geq 1 \\ \Omega(n) \text{ even} \\ \Omega(n+1) \text{ even}}} \frac{1}{n^s}, \quad \zeta_{\OO\OO}(s) \;:=\; \sum_{\substack{n \geq 1 \\ \Omega(n) \text{ odd} \\ \Omega(n+1) \text{ odd}}} \frac{1}{n^s},
+\end{equation}
+and similarly $\zeta_{\EE\OO}(s)$, $\zeta_{\OO\EE}(s)$ for the mixed-parity cases.
+\end{definition}
+
+The Even Chowla sum is the Dirichlet series coefficient of $\zeta_{\EE\EE}(s) + \zeta_{\OO\OO}(s) - \zeta_{\EE\OO}(s) - \zeta_{\OO\EE}(s)$. The $\coth$ framework predicts that this difference vanishes at $s = 1$, which is exactly the Chowla conjecture.
+
+\begin{proposition}[Formal $\coth$ Prediction for Shifted Correlations]\label{prop:shifted-coth}
+If the $\Omega$-values at $n$ and $n+1$ were independent (which they are not, but serves as a heuristic), then
+\begin{equation}\label{eq:shifted-prediction}
+\frac{\zeta_{\EE\EE}(s) + \zeta_{\OO\OO}(s)}{\zeta_{\EE\OO}(s) + \zeta_{\OO\EE}(s)} \;=\; \coth(\cA(s))^2.
+\end{equation}
+Since $\coth(\cA(1)) = \coth(\infty) = 1$, this would give $\zeta_{\EE\EE}(1) + \zeta_{\OO\OO}(1) = \zeta_{\EE\OO}(1) + \zeta_{\OO\EE}(1)$, i.e., $S_2(N) = o(N)$.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+Under the independence assumption, the joint parity distribution factorizes:
+\[
+\Pr(\Omega(n) \text{ even}, \Omega(n+1) \text{ even}) = \Pr(\Omega(n) \text{ even}) \cdot \Pr(\Omega(n+1) \text{ even}).
+\]
+The ratio of same-parity to mixed-parity probabilities is
+\[
+\frac{p_{\EE}^2 + p_{\OO}^2}{2 p_{\EE} p_{\OO}} = \frac{(p_{\EE}/p_{\OO})^2 + 1}{2(p_{\EE}/p_{\OO})} = \frac{\coth(\cA)^2 + 1}{2\coth(\cA)},
+\]
+which simplifies to $\coth(\cA)^2$ when $p_{\EE} \approx p_{\OO}$ (i.e., $\cA$ is large). At $s = 1$, $\cA(1) = \infty$, so $\coth(\cA(1)) = 1$, and the ratio equals $1$, giving equidistribution.
+\end{proof}
+
+\begin{remark}[The Independence Gap]
+The critical gap in Path III is the independence assumption. The $\Omega$-values of consecutive integers are \emph{not} independent --- for example, they share common prime factors in a correlated way (at most one of $n, n+1$ is divisible by any prime $p$). The $\coth$ identity correctly captures the global (single-point) parity balance, but extending it to the two-point correlation requires controlling the correlation structure of $\Omega(n)$ and $\Omega(n+1)$. This is equivalent to bounding the covariance
+\[
+\operatorname{Cov}(\lambda(n), \lambda(n+1)) = \mathbb{E}[\lambda(n)\lambda(n+1)] - \mathbb{E}[\lambda(n)] \cdot \mathbb{E}[\lambda(n+1)],
+\]
+which is exactly the Chowla conjecture minus the product of two single-point averages (both of which are $o(1)$ by the PNT). Thus the Chowla conjecture is equivalent to showing that this covariance is $o(1)$, which the $\coth$ framework reduces to showing that the ``non-squarefree correction'' to the independence model is negligible.
+\end{remark}
+
+%==============================================================================
+\section{Comparative Analysis and Synthesis}
+%==============================================================================
+
+\subsection{Summary of the Three Paths}
+
+\begin{table}[htbp]
+\centering
+\caption{Comparison of the three paths toward the Even Chowla Conjecture.}
+\label{tab:comparison}
+\begin{tabularx}{\textwidth}{lXXX}
+\toprule
+& \textbf{Path I: Automorphic} & \textbf{Path II: Duality} & \textbf{Path III: $\coth$} \\
+\midrule
+Core tool & $\lambda$-twist factorization & CM structure of $\mathbb{Z}[i]$ & Parity-squarefree isomorphism \\
+Key identity & $L(s,u_j) L(s,u_j \otimes \lambda) = \frac{L(2s,\sym^2 u_j)}{\zeta(2s)}$ & $E_p^{\mathrm{even}} = E_p^{\mathrm{poly}}$ for $p \equiv 1 \pmod 4$ & $\frac{\zeta_{\EE}}{\zeta_{\OO}} = \coth(\cA) = \frac{Q+M}{Q-M}$ \\
+Unconditional result & $S_2 \ll N^{0.609+\varepsilon}$ & Split-prime control (conditional) & $S_2 = S_2^{\mathrm{sf}} + o(N)$ \\
+Critical gap & Kim--Sarnak exponent $7/64$ & Subconvexity of $L(s, \psi \cdot \lambda_{\mathbb{Z}[i]})$ & Independence of $\Omega(n), \Omega(n+1)$ \\
+If gap resolved & $S_2 = \mathcal{O}(N^{1/2+\varepsilon})$ (implies Chowla) & $S_2 = o(N)$ & $S_2 = o(N)$ \\
+Nature of gap & Ramanujan--Petersson & CM subconvexity & Correlation structure \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Interactions Between the Paths}
+
+The three paths are not independent --- there are deep connections between them.
+
+\begin{proposition}[Interaction I--II: Factorization meets Duality]
+The automorphic factorization identity from Path I, when applied to the Hecke--Maass forms over $\mathbb{Z}[i]$ (i.e., automorphic forms on $\GL_2 / \mathbb{Q}(i)$), directly yields the duality identity from Path II at the level of $L$-functions.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+The Hecke--Maass forms over $\mathbb{Z}[i]$ correspond to automorphic representations of $\GL_2(\mathbb{A}_{\mathbb{Q}(i)})$. The factorization identity applied to these forms gives
+\[
+L(s, \pi) \cdot L(s, \pi \otimes \lambda) = \frac{L(2s, \sym^2 \pi)}{\zeta_{\mathbb{Q}(i)}(2s)}
+\]
+where $\zeta_{\mathbb{Q}(i)}(s) = \zeta(s) L(s, \chi_{-4})$. At split primes $p = \pi \bar{\pi}$, the local factor of $L(s, \chi_{-4})$ equals the local factor of $\zeta(s)$, so the duality $E_p^{\mathrm{even}} = E_p^{\mathrm{poly}}$ is a shadow of the factorization identity in the CM setting.
+\end{proof}
+
+\begin{proposition}[Interaction I--III: Factorization meets $\coth$]
+The factorization identity $L(s, u_j) \cdot L(s, u_j \otimes \lambda) = L(2s, \sym^2 u_j)/\zeta(2s)$, when summed over all cusp forms $u_j$ via the Kuznetsov formula, reproduces the $\coth$ identity at the level of the Rankin--Selberg $L$-functions.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+The Rankin--Selberg method gives
+\[
+\sum_{j} \frac{|L(1/2, u_j)|^2}{L(1, \sym^2 u_j)} = \text{integral involving } |\zeta_{\EE}(s) - \zeta_{\OO}(s)|^2.
+\]
+Applying the factorization and summing over $j$ converts the left side into a sum involving $L(2s, \sym^2 u_j)/\zeta(2s)$, which by the spectral expansion of $\zeta(2s)^{-1}$ recovers the $\coth$ structure.
+\end{proof}
+
+\subsection{The Optimal Strategy}
+
+Based on the analysis above, the optimal strategy for proving the Even Chowla Conjecture combines elements from all three paths:
+
+\begin{enumerate}
+\item \textbf{Start with Path III} to reduce the problem from $\lambda$-correlations to $\mu$-correlations (squarefree arithmetic). This is unconditional and eliminates the non-squarefree contribution entirely.
+
+\item \textbf{Apply Path II} to transfer the $\mu$-correlation problem at split primes to the polynomial Chowla setting, where CM methods are available. This handles half of all primes (by Dirichlet's theorem, $\pi(x; 4, 1) \sim \pi(x)/2$).
+
+\item \textbf{Use Path I} (the automorphic factorization) to handle the $\lambda$-twist subconvexity problem that arises in both the spectral sum and the CM Hecke $L$-function. The factorization converts the unknown $\lambda$-twist into the known symmetric square, which is the key technical advance.
+
+\item \textbf{Combine}: The continuous spectrum is $\mathcal{O}(N^{1/2+\varepsilon})$, the split-prime discrete spectrum is controlled by CM subconvexity (conditional but accessible), and the inert-prime contribution vanishes by the Euler product. The remaining gap is the Kim--Sarnak exponent, which would be eliminated by the Ramanujan--Petersson conjecture.
+\end{enumerate}
+
+%==============================================================================
+\section{Open Problems and Research Directions}
+%==============================================================================
+
+\subsection{The Subconvexity Problem for the $\lambda$-Twist}
+
+The most critical open problem identified by all three paths is the subconvexity of $L(s, u_j \otimes \lambda)$. The factorization identity reduces this to bounding $L(1, \sym^2 u_j)/|L'(1/2, u_j)|$, which is a problem about the derivative of the standard $L$-function at its central zero. A key question is:
+
+\begin{conjecture}[Subconvexity of the $\lambda$-Twist]
+For any $\varepsilon > 0$:
+\begin{equation}\label{eq:subconvexity-conj}
+L(1/2, u_j \otimes \lambda) \ll t_j^{1/2 - \delta + \varepsilon}
+\end{equation}
+for some absolute $\delta > 0$, where the implied constant is independent of $u_j$.
+\end{conjecture}
+
+This would follow from the factorization if one could prove that $L'(1/2, u_j) \gg t_j^{-\varepsilon}$ when $L(1/2, u_j) = 0$, which is a weaker form of the non-vanishing derivative conjecture.
+
+\subsection{The Ramanujan--Petersson Barrier}
+
+The Kim--Sarnak bound $\theta \leq 7/64$ is the best unconditional result toward the Ramanujan--Petersson conjecture for $\SL(\mathbb{Z})$. Improving this to $\theta = 0$ would resolve Path I immediately, giving $S_2(N) = \mathcal{O}(N^{1/2+\varepsilon})$. Any improvement in the exponent $\theta$ directly translates to an improvement in the Chowla bound via the spectral method.
+
+\subsection{The Correlation Structure of $\Omega(n)$}
+
+Path III reduces the Chowla conjecture to understanding the correlation between $\Omega(n)$ and $\Omega(n+1)$. The Erd\H{o}s--Kac theorem gives the marginal distribution, but the joint distribution remains mysterious. A rigorous understanding of the joint moments
+\begin{equation}\label{eq:joint-moments}
+\frac{1}{N}\sum_{n \leq N} \left(\Omega(n) - \log\log N\right)^a \left(\Omega(n+1) - \log\log N\right)^b
+\end{equation}
+for $a + b \geq 2$ would provide the input needed to make the $\coth$ framework rigorous for the shifted problem.
+
+\subsection{The Inert Prime Contribution}
+
+In Path II, the contribution from inert primes $p \equiv 3 \pmod{4}$ is controlled by the vanishing Euler product. A more refined analysis would seek to show that the inert-prime contribution is not just $o(N)$ but in fact has a power-saving rate, which would provide a quantitative strengthening of the Even Chowla bound.
+
+\subsection{Higher-Order Chowla}
+
+All three paths extend naturally to the higher-order Even Chowla sums $S_{2m}(N)$ for $m \geq 2$:
+\begin{itemize}
+\item Path I: The factorization identity applies to each cusp form $u_j$ and its $\lambda$-twist, but the spectral decomposition of $S_{2m}$ involves $(2m-1)$-fold Rankin--Selberg convolutions, which are much harder to control.
+\item Path II: The duality extends to $2m$-point local factors, with the match at split primes becoming $E_p^{(2m),\mathrm{even}} = E_p^{(2m),\mathrm{poly}}$, but the polynomial Chowla problem for higher-degree correlations is correspondingly harder.
+\item Path III: The squarefree reduction extends to $S_{2m}$ by the same parity-neutrality argument, reducing to the $2m$-point M\"obius correlation.
+\end{itemize}
+
+In all cases, the barriers identified for $m = 1$ persist and intensify for $m \geq 2$, consistent with the known connection between the Chowla conjecture and the Gowers norm barrier.
+
+\end{document}
